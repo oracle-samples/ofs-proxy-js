@@ -1,6 +1,6 @@
 ## A sample Script
 
-## Description
+### Description
 
 This script shows how to use the library to connect to an OFS instance and call the getSubscriptions API to get the list of event subscriptions
 
