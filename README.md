@@ -1,6 +1,11 @@
 # Oracle Field Service Proxy
 
 A Javascript proxy to access Oracle Field Service cloud via REST API. For more information about the REST API please visit [the oficial documentation](https://www.oracle.com/pls/topic/lookup?ctx=en/cloud/saas/field-service&ID=field-service)
+
+## Prerequisites
+
+In order to use this library you need to have access to an Oracle Field Service instance, via an application ID. Please contact your OFS Administrator to get one.
+
 ## Installation
 
 1. Clone the repository
