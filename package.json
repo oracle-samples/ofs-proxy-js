@@ -28,7 +28,13 @@
         "cloud",
         "field service"
     ],
-    "author": "borja.toron@oracle.com",
+    "author": {"name": "Borja Toron-Antons",
+        "email: "borja.toron@oracle.com",
+    }
+    "contributors": [    {
+      "name": "Miguel Gall",
+      "email": "miguel.gall@oracle.com"
+    }],
     "license": "UPL-1.0",
     "husky": {
         "hooks": {
