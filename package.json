@@ -14,7 +14,6 @@
         "url": "https://github.com/oracle/ofs-js"
     },
     "scripts": {
-        "prepare": "tsc",
         "build": "tsc",
         "start": "ts-node src/index.ts",
         "test": "jest",
