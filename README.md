@@ -6,6 +6,7 @@ A Javascript proxy to access Oracle Field Service cloud via REST API. For more i
 1. Clone the repository
 
 2. Add the dependency to your project
+   
    `npm install <LOCAL REPOSITORY DIR>`
 
 3. To use the library in your code:
