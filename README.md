@@ -30,9 +30,6 @@ In order to use this library you need to have access to an Oracle Field Service 
 
 ## Documentation and Examples
 
-<!-- Developer-oriented documentation can be published on GitHub, but all product
-     documentation must be published on <https://docs.oracle.com>. -->
-
 Please see the `docs/` directory for documentation and a simple example
 
 ## Version History
@@ -42,11 +39,7 @@ Please see the `docs/` directory for documentation and a simple example
 | 0.1| Added `getActivity`, `updateActivity`, `getSubscriptions` |
 | 1.1| Added `importPlugins` |
 
-
 ## Contributing
-
-<!-- If your project has specific contribution requirements, update the
-    CONTRIBUTING.md file to ensure those requirements are clearly explained. -->
 
 This project welcomes contributions from the community. Before submitting a pull
 request, please [review our contribution guide](./CONTRIBUTING.md).
@@ -58,14 +51,7 @@ vulnerability disclosure process.
 
 ## License
 
-<!-- The correct copyright notice format for both documentation and software
-    is "Copyright (c) [year,] year Oracle and/or its affiliates."
-    You must include the year the content was first released (on any platform) and
-    the most recent year in which it was revised. -->
-
-Copyright (c) 2022 Oracle and/or its affiliates.
-
-<!-- Replace this statement if your project is not licensed under the UPL -->
+Copyright (c) 2023 Oracle and/or its affiliates.
 
 Released under the Universal Permissive License v1.0 as shown at
 <https://oss.oracle.com/licenses/upl/>.
