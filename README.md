@@ -8,13 +8,14 @@ In order to use this library you need to have access to an Oracle Field Service 
 
 ## Installation
 
-1. Clone the repository
 
-2. Add the dependency to your project
+1. Add the dependency to your project
    
-   `npm install <LOCAL REPOSITORY DIR>`
+   `npm install <LOCAL REPOSITORY DIR>`         (if you have cloned the repository)
 
-3. To use the library in your code:
+   `npm install https://github.com/oracle-samples/ofs-proxy-js`    (when installing directly from GitHub)
+
+2. To use the library in your code:
 
    `import {OFSPlugin} from "@ofs_users/proxy"`
 

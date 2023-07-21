@@ -63,9 +63,16 @@ export interface ActivityListResponse {
 }
 
 export class OFSSubscriptionResponse extends OFSResponse {
-    data!: SubscriptionListResponse;
+    data: SubscriptionListResponse = {
+        totalResults: 0,
+        items: [],
+        links: undefined,
+    };
 }
 
 export class OFSActivityResponse extends OFSResponse {
-    data!: ActivityResponse;
+    data: ActivityResponse = {
+        customerName: undefined,
+        activityId: 0,
+    };
 }
