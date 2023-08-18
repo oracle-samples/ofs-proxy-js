@@ -5,22 +5,33 @@
 
 import typescript from "@rollup/plugin-typescript";
 import terser from "@rollup/plugin-terser";
-export default {
-    input: "src/OFS.ts",
-    output: {
-        name: "OFS",
-        file: "dist/ofs.es.js",
-        format: "es",
+import dts from "rollup-plugin-dts";
+const config = [
+    {
+        input: "src/OFS.ts",
+        output: {
+            name: "OFS",
+            file: "dist/ofs.es.js",
+            format: "es",
+        },
+        plugins: [
+            typescript(),
+            terser({
+                compress: {
+                    unsafe: true,
+                },
+                mangle: true,
+                keep_fnames: true,
+                keep_classnames: true,
+            }),
+        ],
     },
-    plugins: [
-        typescript(),
-        terser({
-            compress: {
-                unsafe: true,
-            },
-            mangle: true,
-            keep_fnames: true,
-            keep_classnames: true,
-        }),
-    ],
-};
+    {
+        // path to your declaration files root
+        input: "dist/build/types/src/OFS.d.ts",
+        output: [{ file: "dist/OFS.d.ts", format: "es" }],
+        plugins: [dts()],
+    },
+];
+
+export default config;
