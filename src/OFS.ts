@@ -211,6 +211,40 @@ export class OFS {
         return fetchPromise;
     }
 
+    private _delete(partialURL: string): Promise<OFSResponse> {
+        var theURL = new URL(partialURL, this._baseURL);
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", this.authorization);
+        var requestOptions = {
+            method: "DELETE",
+            headers: myHeaders,
+        };
+        const fetchPromise = fetch(theURL, requestOptions)
+            .then(async function (response) {
+                // Your code for handling the data you get from the API
+                if (response.status == 204) {
+                    return new OFSResponse(
+                        theURL,
+                        response.status,
+                        undefined,
+                        undefined
+                    );
+                } else {
+                    return new OFSResponse(
+                        theURL,
+                        response.status,
+                        response.statusText,
+                        await response.json()
+                    );
+                }
+            })
+            .catch((error) => {
+                console.log("error", error);
+                return new OFSResponse(theURL, -1);
+            });
+        return fetchPromise;
+    }
+
     // Core: Subscription Management
     async getSubscriptions(): Promise<OFSSubscriptionResponse> {
         const partialURL = "/rest/ofscCore/v1/events/subscriptions";
@@ -221,6 +255,11 @@ export class OFS {
     async createActivity(data: any): Promise<OFSResponse> {
         const partialURL = "/rest/ofscCore/v1/activities";
         return this._post(partialURL, data);
+    }
+
+    async deleteActivity(aid: number): Promise<OFSResponse> {
+        const partialURL = `/rest/ofscCore/v1/activities/${aid}`;
+        return this._delete(partialURL);
     }
 
     async getActivityDetails(aid: number): Promise<OFSActivityResponse> {
