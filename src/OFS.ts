@@ -123,6 +123,43 @@ export class OFS {
         return fetchPromise;
     }
 
+    private _post(partialURL: string, data: any): Promise<OFSResponse> {
+        var theURL = new URL(partialURL, this._baseURL);
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", this.authorization);
+        myHeaders.append("Content-Type", "application/json");
+        var requestOptions: RequestInit = {
+            method: "POST",
+            headers: myHeaders,
+            body: JSON.stringify(data),
+        };
+        const fetchPromise = fetch(theURL, requestOptions)
+            .then(async function (response) {
+                // Your code for handling the data you get from the API
+                if (response.status < 400) {
+                    var data = await response.json();
+                    return new OFSResponse(
+                        theURL,
+                        response.status,
+                        undefined,
+                        data
+                    );
+                } else {
+                    return new OFSResponse(
+                        theURL,
+                        response.status,
+                        response.statusText,
+                        await response.json()
+                    );
+                }
+            })
+            .catch((error) => {
+                console.log("error", error);
+                return new OFSResponse(theURL, -1);
+            });
+        return fetchPromise;
+    }
+
     private _postMultiPart(
         partialURL: string,
         data: FormData
@@ -174,10 +211,16 @@ export class OFS {
         return fetchPromise;
     }
 
-    // Specific functions
+    // Core: Subscription Management
     async getSubscriptions(): Promise<OFSSubscriptionResponse> {
         const partialURL = "/rest/ofscCore/v1/events/subscriptions";
         return this._get(partialURL);
+    }
+
+    // Core: Activity Management
+    async createActivity(data: any): Promise<OFSResponse> {
+        const partialURL = "/rest/ofscCore/v1/activities";
+        return this._post(partialURL, data);
     }
 
     async getActivityDetails(aid: number): Promise<OFSActivityResponse> {
@@ -189,6 +232,7 @@ export class OFS {
         return this._patch(partialURL, data);
     }
 
+    // Metadata: Plugin Management
     async importPlugins(file?: PathLike, data?: string): Promise<OFSResponse> {
         const partialURL =
             "/rest/ofscMetadata/v1/plugins/custom-actions/import";
