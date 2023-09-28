@@ -8,11 +8,20 @@ import { OFSCredentials } from "../../src/model";
 import { OFS } from "../../src/OFS";
 import myCredentials from "../credentials_test.json";
 
-const myProxy: OFS = new OFS(myCredentials);
+var myProxy: OFS;
 
-test("Creation", () => {
-    //const myProxy = new OFS(myCredentials);
+// Setup info
+beforeAll(() => {
+    myProxy = new OFS(myCredentials);
     expect(myProxy.instance).toBe(myCredentials.instance);
+});
+
+// Teardown info
+var activityList: number[] = [];
+afterAll(() => {
+    activityList.forEach(async (aid) => {
+        await myProxy.deleteActivity(aid);
+    });
 });
 
 test("Get Subscriptions", async () => {
@@ -31,6 +40,33 @@ test("Get non valid Activity Details", async () => {
     var aid = -1;
     var result = await myProxy.getActivityDetails(aid);
     expect(result.status).toBe(400);
+});
+
+test("Create Activity", async () => {
+    var activityData = {
+        activityType: "01",
+        resourceId: "FLUSA",
+    };
+    var result = await myProxy.createActivity(activityData);
+    expect(result.status).toBe(201);
+    expect(result.data.activityType).toBe(activityData.activityType);
+    // For cleanup
+    var activityId = result.data.activityId;
+    activityList.push(activityId);
+});
+
+test("Delete Activity", async () => {
+    var activityData = {
+        activityType: "01",
+        resourceId: "FLUSA",
+    };
+    var result = await myProxy.createActivity(activityData);
+    expect(result.status).toBe(201);
+    expect(result.data.activityType).toBe(activityData.activityType);
+    var activityId = result.data.activityId;
+    activityList.push(activityId);
+    var result = await myProxy.deleteActivity(activityId);
+    expect(result.status).toBe(204);
 });
 
 test("Update Activity Details", async () => {
