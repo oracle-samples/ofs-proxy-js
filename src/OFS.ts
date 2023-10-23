@@ -51,8 +51,15 @@ export class OFS {
         return "Basic " + hash;
     }
 
-    private _get(partialURL: string): Promise<OFSResponse> {
+    private _get(
+        partialURL: string,
+        params: any = undefined
+    ): Promise<OFSResponse> {
         var theURL = new URL(partialURL, this._baseURL);
+        if (params != undefined) {
+            const urlSearchParams = new URLSearchParams(params);
+            theURL.search = urlSearchParams.toString();
+        }
         var myHeaders = new Headers();
         myHeaders.append("Authorization", this.authorization);
         var requestOptions = {
@@ -269,6 +276,20 @@ export class OFS {
     async updateActivity(aid: number, data: any): Promise<OFSResponse> {
         const partialURL = `/rest/ofscCore/v1/activities/${aid}`;
         return this._patch(partialURL, data);
+    }
+
+    // Core: User Management
+    async getUsers(
+        offset: number = 0,
+        limit: number = 100
+    ): Promise<OFSResponse> {
+        const partialURL = "/rest/ofscCore/v1/users";
+        return this._get(partialURL, { offset: offset, limit: limit });
+    }
+
+    async getUserDetails(uname: string): Promise<OFSResponse> {
+        const partialURL = `/rest/ofscCore/v1/users/${uname}`;
+        return this._get(partialURL);
     }
 
     // Metadata: Plugin Management
