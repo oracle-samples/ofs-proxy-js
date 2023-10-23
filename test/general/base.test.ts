@@ -105,3 +105,38 @@ test("Update Plugin (buffer)", async () => {
     );
     expect(result.status).toBe(204);
 });
+
+test("Get Users No offset", async () => {
+    var result = await myProxy.getUsers();
+    expect(result.status).toBe(200);
+    expect(result.data.totalResults).toBeGreaterThan(200);
+    expect(result.data.items.length).toEqual(result.data.limit);
+    expect(result.data.items[0].login).toBe("admin");
+});
+
+test("Get Users with offset", async () => {
+    var result = await myProxy.getUsers(20);
+    expect(result.status).toBe(200);
+    expect(result.data.totalResults).toBeGreaterThan(200);
+    expect(result.data.offset).toBe(20);
+    expect(result.data.limit).toBe(100);
+    expect(result.data.items.length).toEqual(result.data.limit);
+    expect(result.data.items[0].login).not.toBe("admin");
+});
+
+test("Get Users with offset and limit", async () => {
+    var result = await myProxy.getUsers(20, 75);
+    expect(result.status).toBe(200);
+    expect(result.data.totalResults).toBeGreaterThan(200);
+    expect(result.data.offset).toBe(20);
+    expect(result.data.limit).toBe(75);
+    expect(result.data.items.length).toEqual(result.data.limit);
+    expect(result.data.items[0].login).not.toBe("admin");
+});
+
+test("Get User Details", async () => {
+    var result = await myProxy.getUserDetails("admin");
+    expect(result.status).toBe(200);
+    expect(result.data.login).toBe("admin");
+    console.log(result.data);
+});
