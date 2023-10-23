@@ -140,3 +140,10 @@ test("Get User Details", async () => {
     expect(result.data.login).toBe("admin");
     console.log(result.data);
 });
+
+test("Get all Users", async () => {
+    var result = await myProxy.getAllUsers();
+    expect(result.totalResults).toBeGreaterThan(200);
+    expect(result.items.length).toEqual(result.totalResults);
+    expect(result.items[0].login).toBe("admin");
+});

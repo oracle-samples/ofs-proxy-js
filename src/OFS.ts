@@ -287,6 +287,38 @@ export class OFS {
         return this._get(partialURL, { offset: offset, limit: limit });
     }
 
+    /**
+     * Retrieves all users from the OFS API.
+     * @returns An object containing all users.
+     */
+    async getAllUsers() {
+        const partialURL = "/rest/ofscCore/v1/users";
+        // Start with offset 0 and keep getting results until we get less than 100
+        var offset = 0;
+        var limit = 100;
+        var result: any = undefined;
+        var allResults: any = { totalResults: 0, items: [] };
+        do {
+            result = await this._get(partialURL, {
+                offset: offset,
+                limit: limit,
+            });
+            if (result.status < 400) {
+                if (allResults.totalResults == 0) {
+                    allResults = result.data;
+                } else {
+                    allResults.items = allResults.items.concat(
+                        result.data.items
+                    );
+                }
+                offset += limit;
+            } else {
+                return result;
+            }
+        } while (result.data.items.length == limit);
+        return allResults;
+    }
+
     async getUserDetails(uname: string): Promise<OFSResponse> {
         const partialURL = `/rest/ofscCore/v1/users/${uname}`;
         return this._get(partialURL);
