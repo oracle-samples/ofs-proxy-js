@@ -11,7 +11,7 @@
     "module": "dist/ofs.es.js",
     "types": "dist/OFS.d.ts",
     "repository": {
-        "url": "https://github.com/oracle-samples/ofs-proxy-js"
+        "url": "git+https://github.com/oracle-samples/ofs-proxy-js.git"
     },
     "scripts": {
         "build": "tsc",
