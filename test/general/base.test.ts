@@ -70,7 +70,15 @@ test("Delete Activity", async () => {
 });
 
 test("Update Activity Details", async () => {
-    var aid = 3954799;
+    var activityData = {
+        activityType: "01",
+        resourceId: "FLUSA",
+    };
+    var result = await myProxy.createActivity(activityData);
+    expect(result.status).toBe(201);
+    expect(result.data.activityType).toBe(activityData.activityType);
+    var aid = result.data.activityId;
+    activityList.push(aid);
     var initialName = "Gizella Quintero";
     var data = {
         customerName: "NewName",
