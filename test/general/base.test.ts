@@ -138,7 +138,6 @@ test("Get User Details", async () => {
     var result = await myProxy.getUserDetails("admin");
     expect(result.status).toBe(200);
     expect(result.data.login).toBe("admin");
-    console.log(result.data);
 });
 
 test("Get all Users", async () => {

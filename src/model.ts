@@ -62,6 +62,33 @@ export interface ActivityListResponse {
     links: any;
 }
 
+export interface OFSTranslation {
+    language: string;
+    name: string;
+    languageISO: string;
+}
+export interface OFSPropertyDetails {
+    label: string;
+    name?: string;
+    type?: string;
+    entity?: string;
+    gui?: string;
+    allowDraw?: boolean;
+    cloneFlag?: boolean;
+    fileSizeLimit?: string;
+    getGeolocation?: boolean;
+    hint?: string;
+    lines?: number;
+    maxHeight?: number;
+    maxWidth?: number;
+    mimeTypes?: [];
+    template?: string;
+    transformation?: any;
+    watermark?: boolean;
+    translations?: OFSTranslation[];
+    links?: any;
+}
+
 export class OFSSubscriptionResponse extends OFSResponse {
     data: SubscriptionListResponse = {
         totalResults: 0,
@@ -74,5 +101,17 @@ export class OFSActivityResponse extends OFSResponse {
     data: ActivityResponse = {
         customerName: undefined,
         activityId: 0,
+    };
+}
+
+export class OFSPropertyDetailsResponse extends OFSResponse {
+    data: OFSPropertyDetails = {
+        label: "",
+        name: "",
+        type: "string",
+        entity: "activity",
+        gui: "",
+        translations: [],
+        links: undefined,
     };
 }
