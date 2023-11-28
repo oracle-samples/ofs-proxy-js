@@ -15,6 +15,7 @@ import {
     OFSGetPropertiesParams,
 } from "./model";
 
+export * from "./model";
 export class OFS {
     private _credentials!: OFSCredentials;
     private _hash!: string;
