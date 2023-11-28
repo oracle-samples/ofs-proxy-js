@@ -7,6 +7,7 @@ import { createReadStream, readFileSync } from "fs";
 import { OFSCredentials } from "../../src/model";
 import { OFS } from "../../src/OFS";
 import myCredentials from "../credentials_test.json";
+import { th } from "@faker-js/faker";
 
 var myProxy: OFS;
 
@@ -70,7 +71,13 @@ test("Delete Activity", async () => {
 });
 
 test("Update Activity Details", async () => {
-    var aid = 3954799;
+    var activityData = {
+        activityType: "01",
+        resourceId: "FLUSA",
+    };
+    var result = await myProxy.createActivity(activityData);
+    expect(result.status).toBe(201);
+    var aid = result.data.activityId;
     var initialName = "Gizella Quintero";
     var data = {
         customerName: "NewName",
@@ -85,6 +92,7 @@ test("Update Activity Details", async () => {
         (await myProxy.updateActivity(aid, { customerName: initialName })).data
             .customerName
     ).toBe(initialName);
+    activityList.push(aid);
 });
 
 test("Update non valid Activity Details", async () => {
@@ -95,7 +103,12 @@ test("Update non valid Activity Details", async () => {
 
 test("Update Plugin (path)", async () => {
     var result = await myProxy.importPlugins("test/test_plugin.xml");
-    expect(result.status).toBe(204);
+    try {
+        expect(result.status).toBe(204);
+    } catch (error) {
+        console.error(result);
+        throw error;
+    }
 });
 
 test("Update Plugin (buffer)", async () => {
@@ -103,7 +116,12 @@ test("Update Plugin (buffer)", async () => {
         undefined,
         readFileSync("test/test_plugin.xml").toString()
     );
-    expect(result.status).toBe(204);
+    try {
+        expect(result.status).toBe(204);
+    } catch (error) {
+        console.error(result);
+        throw error;
+    }
 });
 
 test("Get Users No offset", async () => {

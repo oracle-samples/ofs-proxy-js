@@ -11,6 +11,8 @@ import {
     OFSResponse,
     OFSSubscriptionResponse,
     OFSPropertyDetails,
+    OFSPropertyListResponse,
+    OFSGetPropertiesParams,
 } from "./model";
 
 export class OFS {
@@ -383,9 +385,12 @@ export class OFS {
     }
 
     //Meta: Property Management
-    async getProperties(): Promise<OFSResponse> {
+
+    async getProperties(
+        params: OFSGetPropertiesParams = { offset: 0, limit: 100 }
+    ): Promise<OFSPropertyListResponse> {
         const partialURL = "/rest/ofscMetadata/v1/properties";
-        return this._get(partialURL);
+        return this._get(partialURL, params);
     }
 
     async getPropertyDetails(pid: string): Promise<OFSPropertyDetailsResponse> {

@@ -89,6 +89,18 @@ export interface OFSPropertyDetails {
     links?: any;
 }
 
+export interface OFSGetPropertiesParams {
+    entity?: string;
+    language?: string;
+    limit?: number;
+    offset?: number;
+    type?: number;
+}
+class OFSPropertyList {
+    totalResults: number = 0;
+    items: OFSPropertyDetails[] = [];
+}
+
 export class OFSSubscriptionResponse extends OFSResponse {
     data: SubscriptionListResponse = {
         totalResults: 0,
@@ -114,4 +126,8 @@ export class OFSPropertyDetailsResponse extends OFSResponse {
         translations: [],
         links: undefined,
     };
+}
+
+export class OFSPropertyListResponse extends OFSResponse {
+    data: OFSPropertyList = new OFSPropertyList();
 }

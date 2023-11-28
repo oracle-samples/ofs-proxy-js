@@ -5,14 +5,30 @@ import {
 } from "../../src/model";
 import { OFS } from "../../src/OFS";
 import myCredentials from "../credentials_test.json";
+
+import test_info from "../test_config.json";
 import { faker } from "@faker-js/faker";
 
+import type { Config } from "jest";
+import { defaults } from "jest-config";
+
 var myProxy: OFS;
+var testConfig: any;
+
+interface MetaTestConfiguration {
+    numberOfProperties: number;
+}
+const TEST_CONFIG: Map<string, MetaTestConfiguration> = new Map<string, any>();
+TEST_CONFIG.set("23.11", {
+    numberOfProperties: 464,
+});
 
 // Setup info
 beforeAll(() => {
     myProxy = new OFS(myCredentials);
     expect(myProxy.instance).toBe(myCredentials.instance);
+    var default_version: string = test_info.ofsVersion;
+    testConfig = TEST_CONFIG.get(default_version); // TODO: Store in jest config
 });
 
 // Teardown info
@@ -23,9 +39,17 @@ afterAll(() => {
     });
 });
 
-test("Get Properties", async () => {
+test("Get Properties, default values", async () => {
     var result = await myProxy.getProperties();
-    expect(result.status).toBe(200);
+    try {
+        expect(result.status).toBe(200);
+        expect(result.data.items.length).toBe(100);
+        expect(result.data.totalResults).toBeGreaterThan(100);
+        expect(result.data.totalResults).toBe(testConfig.numberOfProperties);
+    } catch (error) {
+        console.error(result);
+        throw error;
+    }
 });
 
 test("Get Valid Field Details", async () => {
