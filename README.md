@@ -19,7 +19,7 @@ In order to use this library you need to have access to an Oracle Field Service 
 
 2. To use the library in your code:
 
-   `import {OFSPlugin} from "@ofs_users/proxy"`
+   `import {OFS} from "@ofs_users/proxy"`
 
 ## Functions implemented (may not be complete)
 
