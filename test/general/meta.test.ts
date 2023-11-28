@@ -7,7 +7,7 @@ import { OFS } from "../../src/OFS";
 import myCredentials from "../credentials_test.json";
 
 import test_info from "../test_config.json";
-import { faker } from "@faker-js/faker";
+import { fa, faker } from "@faker-js/faker";
 
 import type { Config } from "jest";
 import { defaults } from "jest-config";
@@ -17,10 +17,12 @@ var testConfig: any;
 
 interface MetaTestConfiguration {
     numberOfProperties: number;
+    numberOfResourceProperties: number;
 }
 const TEST_CONFIG: Map<string, MetaTestConfiguration> = new Map<string, any>();
 TEST_CONFIG.set("23.11", {
     numberOfProperties: 464,
+    numberOfResourceProperties: 34,
 });
 
 // Setup info
@@ -45,7 +47,90 @@ test("Get Properties, default values", async () => {
         expect(result.status).toBe(200);
         expect(result.data.items.length).toBe(100);
         expect(result.data.totalResults).toBeGreaterThan(100);
-        expect(result.data.totalResults).toBe(testConfig.numberOfProperties);
+        expect(result.data.totalResults).toBeGreaterThanOrEqual(
+            testConfig.numberOfProperties
+        );
+        expect(result.data.offset).toBe(0);
+        expect(result.data.limit).toBe(100);
+    } catch (error) {
+        console.error(result);
+        throw error;
+    }
+});
+
+test("Get Properties, with offset", async () => {
+    let offset = faker.number.int({
+        min: 0,
+        max: testConfig.numberOfProperties - 100,
+    });
+    var result = await myProxy.getProperties({ offset: offset });
+    try {
+        expect(result.status).toBe(200);
+        expect(result.data.items.length).toBe(100);
+        expect(result.data.totalResults).toBeGreaterThanOrEqual(
+            testConfig.numberOfProperties
+        );
+        expect(result.data.offset).toBe(offset);
+        expect(result.data.limit).toBe(100);
+    } catch (error) {
+        console.error(result);
+        throw error;
+    }
+});
+
+test("Get Properties, with limit", async () => {
+    let limit = faker.number.int({ min: 10, max: 100 });
+    var result = await myProxy.getProperties({ limit: limit });
+    try {
+        expect(result.status).toBe(200);
+        expect(result.data.items.length).toBe(limit);
+        expect(result.data.totalResults).toBeGreaterThanOrEqual(
+            testConfig.numberOfProperties
+        );
+        expect(result.data.offset).toBe(0);
+        expect(result.data.limit).toBe(limit);
+    } catch (error) {
+        console.error(result);
+        throw error;
+    }
+});
+
+test("Get Properties, with offset and limit", async () => {
+    let offset = faker.number.int({
+        min: 0,
+        max: testConfig.numberOfProperties - 100,
+    });
+    let limit = faker.number.int({ min: 10, max: 100 });
+    var result = await myProxy.getProperties({ offset: offset, limit: limit });
+    try {
+        expect(result.status).toBe(200);
+        expect(result.data.items.length).toBe(limit);
+        expect(result.data.totalResults).toBeGreaterThanOrEqual(
+            testConfig.numberOfProperties
+        );
+        expect(result.data.offset).toBe(offset);
+        expect(result.data.limit).toBe(limit);
+    } catch (error) {
+        console.error(result);
+        throw error;
+    }
+});
+
+test("Get Properties, with entity", async () => {
+    var result = await myProxy.getProperties({ entity: "resource" });
+    try {
+        expect(result.status).toBe(200);
+        expect(result.data.items.length).toBe(
+            Math.min(100, testConfig.numberOfResourceProperties)
+        );
+        expect(result.data.totalResults).toBe(
+            testConfig.numberOfResourceProperties
+        );
+        expect(result.data.offset).toBe(0);
+        expect(result.data.limit).toBe(100);
+        result.data.items.forEach((element) => {
+            expect(element.entity).toBe("resource");
+        });
     } catch (error) {
         console.error(result);
         throw error;

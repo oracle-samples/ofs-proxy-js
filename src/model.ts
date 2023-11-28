@@ -3,6 +3,8 @@
  * Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at https://oss.oracle.com/licenses/upl/
  */
 
+import { off } from "process";
+
 export type OFSCredentials = {
     instance: string;
     clientId: string;
@@ -97,8 +99,10 @@ export interface OFSGetPropertiesParams {
     type?: number;
 }
 class OFSPropertyList {
-    totalResults: number = 0;
     items: OFSPropertyDetails[] = [];
+    limit: number = 0;
+    offset: number = 0;
+    totalResults: number = 0;
 }
 
 export class OFSSubscriptionResponse extends OFSResponse {
