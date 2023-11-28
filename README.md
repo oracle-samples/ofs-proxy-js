@@ -15,11 +15,11 @@ In order to use this library you need to have access to an Oracle Field Service 
 
    `npm install https://github.com/oracle-samples/ofs-proxy-js.git`    (when installing directly from GitHub)
 
-   `npm install @ofs_users/proxy`    (when installing from npm)
+   `npm install @ofs-users/proxy`    (when installing from npm)
 
 2. To use the library in your code:
 
-   `import {OFS} from "@ofs_users/proxy"`
+   `import {OFS} from "@ofs-users/proxy"`
 
 ## Functions implemented (may not be complete)
 
