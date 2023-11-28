@@ -15,19 +15,51 @@ In order to use this library you need to have access to an Oracle Field Service 
 
    `npm install https://github.com/oracle-samples/ofs-proxy-js.git`    (when installing directly from GitHub)
 
+   `npm install @ofs_users/proxy`    (when installing from npm)
+
 2. To use the library in your code:
 
    `import {OFSPlugin} from "@ofs_users/proxy"`
 
-## Functions implemented
+## Functions implemented (may not be complete)
 
-`getActivity(activityId)`: Get activity details
+### Core: Activity Management
+
+`getActivities()`: Get existing activities
 
 `updateActivity(activityId, activityData)`: Update activity details
 
+`createActivity(activityData)`: Create activity
+
+`deleteActivity(activityId)`: Delete activity
+
+`updateActivity(activityId, activityData)`: Update activity details
+
+### Core: Subscription Management
+
 `getSubscriptions()`: Get existing subscriptions
 
+### Core: User Management
+
+`getUsers()`: Get existing users
+
+`getUserDetails(userId)`: Get user details
+
+`getAllUsers()`: Get all users
+
+### Core: Plugin Management
+
 `importPlugins(file?, data?)`: Import plugin by path or via an XML string
+
+### Metadata: Property Management
+
+`getProperties()`: Get existing properties
+
+`getPropertyDetails(propertyId)`: Get property details
+
+`updateProperty(propertyId, propertyData)`: Update property details
+
+`createReplaceProperty(propertyData)`: Create or replace property
 
 ## Documentation and Examples
 
@@ -37,8 +69,11 @@ Please see the `docs/` directory for documentation and a simple example
 
 | Version | Comments |
 | ---------| ----------- |
-| 0.1| Added `getActivity`, `updateActivity`, `getSubscriptions` |
+| 0.1| Added `getActivityDetails`, `updateActivity`, `getSubscriptions` |
 | 1.1| Added `importPlugins` |
+| 1.2| Added `createActivity`, `deleteActivity` |
+| 1.6| Added `getUsers`, `getUserDetails`, `getAllUsers` |
+| 1.8| Added `getProperties`, `getPropertyDetails`, `updateProperty` `createReplaceProperty` |
 
 ## Contributing
 
