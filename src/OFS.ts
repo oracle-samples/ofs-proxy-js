@@ -7,8 +7,12 @@ import { PathLike, readFileSync } from "fs";
 import {
     OFSActivityResponse,
     OFSCredentials,
+    OFSPropertyDetailsResponse,
     OFSResponse,
     OFSSubscriptionResponse,
+    OFSPropertyDetails,
+    OFSPropertyListResponse,
+    OFSGetPropertiesParams,
 } from "./model";
 
 export class OFS {
@@ -120,6 +124,43 @@ export class OFS {
                         response.status,
                         response.statusText,
                         undefined
+                    );
+                }
+            })
+            .catch((error) => {
+                console.log("error", error);
+                return new OFSResponse(theURL, -1);
+            });
+        return fetchPromise;
+    }
+
+    private _put(partialURL: string, requestData: any): Promise<OFSResponse> {
+        var theURL = new URL(partialURL, this._baseURL);
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", this.authorization);
+        myHeaders.append("Content-Type", "application/json");
+        var requestOptions: RequestInit = {
+            method: "PUT",
+            headers: myHeaders,
+            body: JSON.stringify(requestData),
+        };
+        const fetchPromise = fetch(theURL, requestOptions)
+            .then(async function (response) {
+                // Your code for handling the data you get from the API
+                if (response.status < 400) {
+                    var data = await response.json();
+                    return new OFSResponse(
+                        theURL,
+                        response.status,
+                        undefined,
+                        data
+                    );
+                } else {
+                    return new OFSResponse(
+                        theURL,
+                        response.status,
+                        response.statusText,
+                        requestData
                     );
                 }
             })
@@ -341,5 +382,33 @@ export class OFS {
         }
 
         return this._postMultiPart(partialURL, formData);
+    }
+
+    //Meta: Property Management
+
+    async getProperties(
+        params: OFSGetPropertiesParams = { offset: 0, limit: 100 }
+    ): Promise<OFSPropertyListResponse> {
+        const partialURL = "/rest/ofscMetadata/v1/properties";
+        return this._get(partialURL, params);
+    }
+
+    async getPropertyDetails(pid: string): Promise<OFSPropertyDetailsResponse> {
+        const partialURL = `/rest/ofscMetadata/v1/properties/${pid}`;
+        return this._get(partialURL);
+    }
+
+    async createReplaceProperty(
+        data: OFSPropertyDetails
+    ): Promise<OFSPropertyDetailsResponse> {
+        const partialURL = `/rest/ofscMetadata/v1/properties/${data.label}`;
+        return this._put(partialURL, data);
+    }
+
+    async updateProperty(
+        data: OFSPropertyDetails
+    ): Promise<OFSPropertyDetailsResponse> {
+        const partialURL = `/rest/ofscMetadata/v1/properties/${data.label}`;
+        return this._patch(partialURL, data);
     }
 }

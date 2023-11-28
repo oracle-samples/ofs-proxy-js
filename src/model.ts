@@ -3,6 +3,8 @@
  * Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at https://oss.oracle.com/licenses/upl/
  */
 
+import { off } from "process";
+
 export type OFSCredentials = {
     instance: string;
     clientId: string;
@@ -62,6 +64,47 @@ export interface ActivityListResponse {
     links: any;
 }
 
+export interface OFSTranslation {
+    language: string;
+    name: string;
+    languageISO: string;
+}
+export interface OFSPropertyDetails {
+    label: string;
+    name?: string;
+    type?: string;
+    entity?: string;
+    gui?: string;
+    allowDraw?: boolean;
+    cloneFlag?: boolean;
+    fileSizeLimit?: string;
+    getGeolocation?: boolean;
+    hint?: string;
+    lines?: number;
+    maxHeight?: number;
+    maxWidth?: number;
+    mimeTypes?: [];
+    template?: string;
+    transformation?: any;
+    watermark?: boolean;
+    translations?: OFSTranslation[];
+    links?: any;
+}
+
+export interface OFSGetPropertiesParams {
+    entity?: string;
+    language?: string;
+    limit?: number;
+    offset?: number;
+    type?: number;
+}
+class OFSPropertyList {
+    items: OFSPropertyDetails[] = [];
+    limit: number = 0;
+    offset: number = 0;
+    totalResults: number = 0;
+}
+
 export class OFSSubscriptionResponse extends OFSResponse {
     data: SubscriptionListResponse = {
         totalResults: 0,
@@ -75,4 +118,20 @@ export class OFSActivityResponse extends OFSResponse {
         customerName: undefined,
         activityId: 0,
     };
+}
+
+export class OFSPropertyDetailsResponse extends OFSResponse {
+    data: OFSPropertyDetails = {
+        label: "",
+        name: "",
+        type: "string",
+        entity: "activity",
+        gui: "",
+        translations: [],
+        links: undefined,
+    };
+}
+
+export class OFSPropertyListResponse extends OFSResponse {
+    data: OFSPropertyList = new OFSPropertyList();
 }
