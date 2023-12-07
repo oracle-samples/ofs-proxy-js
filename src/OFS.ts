@@ -86,13 +86,11 @@ export class OFS {
                     ) {
                         data = await response.json();
                     } else if (
-                        response.headers
-                            .get("Content-Type")
-                            ?.includes("octet-stream")
+                        response.headers.get("Content-Type")?.includes("text")
                     ) {
-                        data = await response.blob();
-                    } else {
                         data = await response.text();
+                    } else {
+                        data = await response.blob();
                     }
                     return new OFSResponse(
                         theURL,

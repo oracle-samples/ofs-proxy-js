@@ -133,8 +133,8 @@ test("Get File Property (Text)", async () => {
     var result = await myProxy.createActivity(activityData);
     expect(result.status).toBe(201);
     var aid = result.data.activityId;
-    var fileName = "test.txt";
-    var fileContent = "Hello World";
+    var fileName = `${faker.lorem.word()}.txt`;
+    var fileContent = faker.lorem.paragraphs(5);
     var contentType: string = "text/plain";
     var blob = new Blob([Buffer.from(fileContent)], { type: contentType });
     var result = await myProxy.setFileProperty(
@@ -174,4 +174,57 @@ test("Get File Property (Text)", async () => {
         throw error;
     }
     activityList.push(aid);
+});
+
+test("Get File Property (Binary)", async () => {
+    var activityData = {
+        activityType: "02",
+        resourceId: "NVUSA",
+        customerName: faker.person.fullName(),
+    };
+    var result = await myProxy.createActivity(activityData);
+    expect(result.status).toBe(201);
+    var aid = result.data.activityId;
+    var fileName = `${faker.lorem.word()}.jpg`;
+    var fileContent = readFileSync("test/test_data/test.jpg");
+    var contentType: string = "image/jpeg";
+    var blob = new Blob([Buffer.from(fileContent)], { type: contentType });
+    var result = await myProxy.setFileProperty(
+        aid,
+        "ATTACHMENT",
+        blob,
+        fileName,
+        contentType
+    );
+    try {
+        expect(result.status).toBe(204);
+    } catch (error) {
+        console.error(result);
+        throw error;
+    }
+    var result = await myProxy.getFilePropertyMetadata(aid, "ATTACHMENT");
+    try {
+        expect(result.status).toBe(200);
+        expect(result.data.size).toBe(fileContent.length);
+        expect(result.data.mediaType).toBe(contentType);
+        expect(result.data.name).toBe(fileName);
+    } catch (error) {
+        console.error(result);
+        throw error;
+    }
+
+    var result = await myProxy.getFilePropertyContent(
+        aid,
+        "ATTACHMENT",
+        contentType
+    );
+    try {
+        expect(result.status).toBe(200);
+        expect(result.data.size).toBe(fileContent.length);
+        //expect(result.data).toBe(fileContent);
+    } catch (error) {
+        console.error(result);
+        throw error;
+    }
+    //activityList.push(aid);
 });
