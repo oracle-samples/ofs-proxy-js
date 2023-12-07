@@ -58,7 +58,8 @@ export class OFS {
 
     private _get(
         partialURL: string,
-        params: any = undefined
+        params: any = undefined,
+        extraHeaders: Headers = new Headers()
     ): Promise<OFSResponse> {
         var theURL = new URL(partialURL, this._baseURL);
         if (params != undefined) {
@@ -67,6 +68,10 @@ export class OFS {
         }
         var myHeaders = new Headers();
         myHeaders.append("Authorization", this.authorization);
+        extraHeaders.forEach((value, key) => {
+            console.log(key, value);
+            myHeaders.append(key, value);
+        });
         var requestOptions = {
             method: "GET",
             headers: myHeaders,
@@ -75,12 +80,26 @@ export class OFS {
             .then(async function (response) {
                 // Your code for handling the data you get from the API
                 if (response.status < 400) {
-                    var data = await response.json();
+                    var data;
+                    if (
+                        response.headers.get("Content-Type")?.includes("json")
+                    ) {
+                        data = await response.json();
+                    } else if (
+                        response.headers
+                            .get("Content-Type")
+                            ?.includes("octet-stream")
+                    ) {
+                        data = await response.blob();
+                    } else {
+                        data = await response.text();
+                    }
                     return new OFSResponse(
                         theURL,
                         response.status,
                         undefined,
-                        data
+                        data,
+                        response.headers.get("Content-Type") || undefined
                     );
                 } else {
                     return new OFSResponse(
@@ -135,27 +154,51 @@ export class OFS {
         return fetchPromise;
     }
 
-    private _put(partialURL: string, requestData: any): Promise<OFSResponse> {
+    private _put(
+        partialURL: string,
+        requestData: any,
+        contentType: string = "application/json",
+        fileName?: string
+    ): Promise<OFSResponse> {
         var theURL = new URL(partialURL, this._baseURL);
         var myHeaders = new Headers();
         myHeaders.append("Authorization", this.authorization);
-        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("Content-Type", contentType);
+        if (contentType == "application/json") {
+            requestData = JSON.stringify(requestData);
+        }
+        if (fileName) {
+            myHeaders.append(
+                "Content-Disposition",
+                `attachment; filename=${fileName}`
+            );
+        }
         var requestOptions: RequestInit = {
             method: "PUT",
             headers: myHeaders,
-            body: JSON.stringify(requestData),
+            body: requestData,
         };
         const fetchPromise = fetch(theURL, requestOptions)
             .then(async function (response) {
                 // Your code for handling the data you get from the API
                 if (response.status < 400) {
-                    var data = await response.json();
-                    return new OFSResponse(
-                        theURL,
-                        response.status,
-                        undefined,
-                        data
-                    );
+                    if (response.status == 204) {
+                        //No data here
+                        return new OFSResponse(
+                            theURL,
+                            response.status,
+                            undefined,
+                            undefined
+                        );
+                    } else {
+                        var data = await response.json();
+                        return new OFSResponse(
+                            theURL,
+                            response.status,
+                            undefined,
+                            data
+                        );
+                    }
                 } else {
                     return new OFSResponse(
                         theURL,
@@ -318,6 +361,38 @@ export class OFS {
     async updateActivity(aid: number, data: any): Promise<OFSResponse> {
         const partialURL = `/rest/ofscCore/v1/activities/${aid}`;
         return this._patch(partialURL, data);
+    }
+
+    async getFilePropertyContent(
+        aid: number,
+        propertyLabel: string,
+        nediaType: string = "*/*"
+    ): Promise<OFSResponse> {
+        var myHeaders = new Headers();
+        myHeaders.append("Accept", nediaType);
+        const partialURL = `/rest/ofscCore/v1/activities/${aid}/${propertyLabel}`;
+        return this._get(partialURL, undefined, myHeaders);
+    }
+
+    async getFilePropertyMetadata(
+        aid: number,
+        propertyLabel: string
+    ): Promise<OFSResponse> {
+        var myHeaders = new Headers();
+        myHeaders.append("Accept", "*/*");
+        const partialURL = `/rest/ofscCore/v1/activities/${aid}/${propertyLabel}`;
+        return this._get(partialURL, undefined, myHeaders);
+    }
+
+    async setFileProperty(
+        aid: number,
+        propertyLabel: string,
+        blob: Blob,
+        fileName: string,
+        contentType: string = "*/*"
+    ): Promise<OFSResponse> {
+        const partialURL = `/rest/ofscCore/v1/activities/${aid}/${propertyLabel}`;
+        return this._put(partialURL, blob, contentType, fileName);
     }
 
     // Core: User Management

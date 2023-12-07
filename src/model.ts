@@ -16,6 +16,7 @@ export interface OFSResponseInterface {
     description: string | undefined;
     data: any;
     url: URL;
+    contentType?: string;
 }
 
 export class OFSResponse implements OFSResponseInterface {
@@ -23,12 +24,20 @@ export class OFSResponse implements OFSResponseInterface {
     description: string | undefined;
     data: any;
     url: URL;
+    contentType?: string;
 
-    constructor(url: URL, status: number, description?: string, data?: any) {
+    constructor(
+        url: URL,
+        status: number,
+        description?: string,
+        data?: any,
+        contentType?: string
+    ) {
         this.status = status;
         this.description = description;
         this.data = data;
         this.url = url;
+        this.contentType = contentType;
     }
 }
 
