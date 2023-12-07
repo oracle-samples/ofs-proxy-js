@@ -2,10 +2,17 @@
 
 | Function | URL |
 | ---------| ----------- |
-| `getActivity`| https://docs.oracle.com/en/cloud/saas/field-service/cxfsc/op-rest-ofsccore-v1-activities-activityid-get.html |
+| `getActivities`| https://docs.oracle.com/en/cloud/saas/field-service/cxfsc/op-rest-ofsccore-v1-activities-get.html |
+| `createActivity`| https://docs.oracle.com/en/cloud/saas/field-service/cxfsc/op-rest-ofsccore-v1-activities-post.html |
+| `deleteActivity`| https://docs.oracle.com/en/cloud/saas/field-service/cxfsc/op-rest-ofsccore-v1-activities-activityid-delete.html |
+| `getActivityDetails`| https://docs.oracle.com/en/cloud/saas/field-service/cxfsc/op-rest-ofsccore-v1-activities-activityid-get.html |
 | `updateActivity`| https://docs.oracle.com/en/cloud/saas/field-service/cxfsc/op-rest-ofsccore-v1-activities-activityid-patch.html
 | `getSubscriptions` | https://docs.oracle.com/en/cloud/saas/field-service/cxfsc/op-rest-ofsccore-v1-events-subscriptions-get.html
 | `importPlugins` | https://docs.oracle.com/en/cloud/saas/field-service/cxfsc/op-rest-ofscmetadata-v1-plugins-custom-actions-import-post.html
+| `getProperties` | https://docs.oracle.com/en/cloud/saas/field-service/cxfsc/op-rest-ofscmetadata-v1-properties-get.html
+| `getPropertyDetails` | https://docs.oracle.com/en/cloud/saas/field-service/cxfsc/op-rest-ofscmetadata-v1-properties-label-get.html
+| `updateProperty` | https://docs.oracle.com/en/cloud/saas/field-service/cxfsc/op-rest-ofscmetadata-v1-properties-label-patch.html
+| `createReplaceProperty` | https://docs.oracle.com/en/cloud/saas/field-service/cxfsc/op-rest-ofscmetadata-v1-properties-label-put.html
 
 ## Sample
 
