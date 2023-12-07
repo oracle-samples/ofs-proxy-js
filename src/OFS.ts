@@ -361,7 +361,7 @@ export class OFS {
         return this._patch(partialURL, data);
     }
 
-    async getFilePropertyContent(
+    async getActivityFilePropertyContent(
         aid: number,
         propertyLabel: string,
         nediaType: string = "*/*"
@@ -372,7 +372,7 @@ export class OFS {
         return this._get(partialURL, undefined, myHeaders);
     }
 
-    async getFilePropertyMetadata(
+    async getActivityFilePropertyMetadata(
         aid: number,
         propertyLabel: string
     ): Promise<OFSResponse> {
@@ -382,13 +382,16 @@ export class OFS {
         return this._get(partialURL, undefined, myHeaders);
     }
 
-    async getFileProperty(
+    async getActivityFileProperty(
         aid: number,
         propertyLabel: string
     ): Promise<OFSResponse> {
         var myHeaders = new Headers();
         const partialURL = `/rest/ofscCore/v1/activities/${aid}/${propertyLabel}`;
-        var metadata = await this.getFilePropertyMetadata(aid, propertyLabel);
+        var metadata = await this.getActivityFilePropertyMetadata(
+            aid,
+            propertyLabel
+        );
         if (metadata.status < 400) {
             var contentType = metadata.contentType;
             if (contentType) {
@@ -410,7 +413,7 @@ export class OFS {
         }
     }
 
-    async setFileProperty(
+    async setActivityFileProperty(
         aid: number,
         propertyLabel: string,
         blob: Blob,

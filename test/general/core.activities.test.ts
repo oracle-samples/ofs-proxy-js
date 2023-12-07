@@ -108,7 +108,7 @@ test("Set File Property (Text)", async () => {
     var fileContent = "Hello World";
     var contentType: string = "text/plain";
     var blob = new Blob([Buffer.from(fileContent)], { type: contentType });
-    var result = await myProxy.setFileProperty(
+    var result = await myProxy.setActivityFileProperty(
         aid,
         "ATTACHMENT",
         blob,
@@ -137,7 +137,7 @@ test("Get File Property (Text)", async () => {
     var fileContent = faker.lorem.paragraphs(5);
     var contentType: string = "text/plain";
     var blob = new Blob([Buffer.from(fileContent)], { type: contentType });
-    var result = await myProxy.setFileProperty(
+    var result = await myProxy.setActivityFileProperty(
         aid,
         "ATTACHMENT",
         blob,
@@ -150,7 +150,10 @@ test("Get File Property (Text)", async () => {
         console.error(result);
         throw error;
     }
-    var result = await myProxy.getFilePropertyMetadata(aid, "ATTACHMENT");
+    var result = await myProxy.getActivityFilePropertyMetadata(
+        aid,
+        "ATTACHMENT"
+    );
     try {
         expect(result.status).toBe(200);
         expect(result.data.size).toBe(fileContent.length);
@@ -161,7 +164,7 @@ test("Get File Property (Text)", async () => {
         throw error;
     }
 
-    var result = await myProxy.getFilePropertyContent(
+    var result = await myProxy.getActivityFilePropertyContent(
         aid,
         "ATTACHMENT",
         contentType
@@ -189,7 +192,7 @@ test("Get File Property (Binary)", async () => {
     var fileContent = readFileSync("test/test_data/test.jpg");
     var contentType: string = "image/jpeg";
     var blob = new Blob([Buffer.from(fileContent)], { type: contentType });
-    var result = await myProxy.setFileProperty(
+    var result = await myProxy.setActivityFileProperty(
         aid,
         "ATTACHMENT",
         blob,
@@ -202,7 +205,10 @@ test("Get File Property (Binary)", async () => {
         console.error(result);
         throw error;
     }
-    var result = await myProxy.getFilePropertyMetadata(aid, "ATTACHMENT");
+    var result = await myProxy.getActivityFilePropertyMetadata(
+        aid,
+        "ATTACHMENT"
+    );
     try {
         expect(result.status).toBe(200);
         expect(result.data.size).toBe(fileContent.length);
@@ -213,7 +219,7 @@ test("Get File Property (Binary)", async () => {
         throw error;
     }
 
-    var result = await myProxy.getFilePropertyContent(
+    var result = await myProxy.getActivityFilePropertyContent(
         aid,
         "ATTACHMENT",
         contentType
@@ -242,7 +248,7 @@ test("Get File Property (Full Binary)", async () => {
     var fileContent = readFileSync("test/test_data/test.jpg");
     var contentType: string = "image/jpeg";
     var blob = new Blob([Buffer.from(fileContent)], { type: contentType });
-    var result = await myProxy.setFileProperty(
+    var result = await myProxy.setActivityFileProperty(
         aid,
         "ATTACHMENT",
         blob,
@@ -255,7 +261,7 @@ test("Get File Property (Full Binary)", async () => {
         console.error(result);
         throw error;
     }
-    var result = await myProxy.getFileProperty(aid, "ATTACHMENT");
+    var result = await myProxy.getActivityFileProperty(aid, "ATTACHMENT");
     try {
         expect(result.status).toBe(200);
         expect(result.data.size).toBe(fileContent.length);
