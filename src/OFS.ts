@@ -382,6 +382,34 @@ export class OFS {
         return this._get(partialURL, undefined, myHeaders);
     }
 
+    async getFileProperty(
+        aid: number,
+        propertyLabel: string
+    ): Promise<OFSResponse> {
+        var myHeaders = new Headers();
+        const partialURL = `/rest/ofscCore/v1/activities/${aid}/${propertyLabel}`;
+        var metadata = await this.getFilePropertyMetadata(aid, propertyLabel);
+        if (metadata.status < 400) {
+            var contentType = metadata.contentType;
+            if (contentType) {
+                myHeaders.append("Accept", contentType);
+            }
+            var content = this._get(partialURL, undefined, myHeaders);
+            return new OFSResponse(
+                metadata.url,
+                metadata.status,
+                metadata.description,
+                {
+                    ...metadata.data,
+                    content: (await content).data,
+                },
+                metadata.contentType
+            );
+        } else {
+            return metadata;
+        }
+    }
+
     async setFileProperty(
         aid: number,
         propertyLabel: string,
