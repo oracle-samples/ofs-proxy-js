@@ -35,6 +35,14 @@ In order to use this library you need to have access to an Oracle Field Service 
 
 `updateActivity(activityId, activityData)`: Update activity details
 
+`setActivityFileProperty(activityId, propertyId, file)`: Set file property
+
+`getActivityFilePropertyMetadata(activityId, propertyId)`: Get file property metadata
+
+`getActivityFilePropertyContent(activityId, propertyId, contentType)`: Get file property content
+
+`getActivityFileProperty(activityId, propertyId)`: Get file property (content and metadata)
+
 ### Core: Subscription Management
 
 `getSubscriptions()`: Get existing subscriptions
