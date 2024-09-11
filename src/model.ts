@@ -6,141 +6,142 @@
 import { off } from "process";
 
 export type OFSCredentials = {
-    instance: string;
-    clientId: string;
-    clientSecret: string;
+  instance?: string;
+  clientId?: string;
+  clientSecret?: string;
+  token?: string;
 };
 
 export interface OFSResponseInterface {
-    status: number;
-    description: string | undefined;
-    data: any;
-    url: URL;
-    contentType?: string;
+  status: number;
+  description: string | undefined;
+  data: any;
+  url: URL;
+  contentType?: string;
 }
 
 export class OFSResponse implements OFSResponseInterface {
-    status: number = -1;
-    description: string | undefined;
-    data: any;
-    url: URL;
-    contentType?: string;
+  status: number = -1;
+  description: string | undefined;
+  data: any;
+  url: URL;
+  contentType?: string;
 
-    constructor(
-        url: URL,
-        status: number,
-        description?: string,
-        data?: any,
-        contentType?: string
-    ) {
-        this.status = status;
-        this.description = description;
-        this.data = data;
-        this.url = url;
-        this.contentType = contentType;
-    }
+  constructor(
+    url: URL,
+    status: number,
+    description?: string,
+    data?: any,
+    contentType?: string
+  ) {
+    this.status = status;
+    this.description = description;
+    this.data = data;
+    this.url = url;
+    this.contentType = contentType;
+  }
 }
 
 export interface ListResponse {
-    totalResults: number;
-    items: Array<any>;
-    links: any;
+  totalResults: number;
+  items: Array<any>;
+  links: any;
 }
 export interface Subscription {
-    subscriptionId: string;
-    applicationId: string;
-    createdTime: string;
-    expirationTime: string;
-    subscriptionTitle: string;
-    subscriptionConfig: any;
-    links: any;
+  subscriptionId: string;
+  applicationId: string;
+  createdTime: string;
+  expirationTime: string;
+  subscriptionTitle: string;
+  subscriptionConfig: any;
+  links: any;
 }
 
 export interface ActivityResponse {
-    customerName: any;
-    activityId: number;
+  customerName: any;
+  activityId: number;
 }
 
 export interface SubscriptionListResponse {
-    totalResults: number;
-    items: Array<Subscription>;
-    links: any;
+  totalResults: number;
+  items: Array<Subscription>;
+  links: any;
 }
 
 export interface ActivityListResponse {
-    totalResults: number;
-    items: Array<Subscription>;
-    links: any;
+  totalResults: number;
+  items: Array<Subscription>;
+  links: any;
 }
 
 export interface OFSTranslation {
-    language: string;
-    name: string;
-    languageISO: string;
+  language: string;
+  name: string;
+  languageISO: string;
 }
 export interface OFSPropertyDetails {
-    label: string;
-    name?: string;
-    type?: string;
-    entity?: string;
-    gui?: string;
-    allowDraw?: boolean;
-    cloneFlag?: boolean;
-    fileSizeLimit?: string;
-    getGeolocation?: boolean;
-    hint?: string;
-    lines?: number;
-    maxHeight?: number;
-    maxWidth?: number;
-    mimeTypes?: [];
-    template?: string;
-    transformation?: any;
-    watermark?: boolean;
-    translations?: OFSTranslation[];
-    links?: any;
+  label: string;
+  name?: string;
+  type?: string;
+  entity?: string;
+  gui?: string;
+  allowDraw?: boolean;
+  cloneFlag?: boolean;
+  fileSizeLimit?: string;
+  getGeolocation?: boolean;
+  hint?: string;
+  lines?: number;
+  maxHeight?: number;
+  maxWidth?: number;
+  mimeTypes?: [];
+  template?: string;
+  transformation?: any;
+  watermark?: boolean;
+  translations?: OFSTranslation[];
+  links?: any;
 }
 
 export interface OFSGetPropertiesParams {
-    entity?: string;
-    language?: string;
-    limit?: number;
-    offset?: number;
-    type?: number;
+  entity?: string;
+  language?: string;
+  limit?: number;
+  offset?: number;
+  type?: number;
 }
 class OFSPropertyList {
-    items: OFSPropertyDetails[] = [];
-    limit: number = 0;
-    offset: number = 0;
-    totalResults: number = 0;
+  items: OFSPropertyDetails[] = [];
+  limit: number = 0;
+  offset: number = 0;
+  totalResults: number = 0;
 }
 
 export class OFSSubscriptionResponse extends OFSResponse {
-    data: SubscriptionListResponse = {
-        totalResults: 0,
-        items: [],
-        links: undefined,
-    };
+  data: SubscriptionListResponse = {
+    totalResults: 0,
+    items: [],
+    links: undefined,
+  };
 }
 
 export class OFSActivityResponse extends OFSResponse {
-    data: ActivityResponse = {
-        customerName: undefined,
-        activityId: 0,
-    };
+  data: ActivityResponse = {
+    customerName: undefined,
+    activityId: 0,
+  };
 }
 
 export class OFSPropertyDetailsResponse extends OFSResponse {
-    data: OFSPropertyDetails = {
-        label: "",
-        name: "",
-        type: "string",
-        entity: "activity",
-        gui: "",
-        translations: [],
-        links: undefined,
-    };
+  data: OFSPropertyDetails = {
+    label: "",
+    name: "",
+    type: "string",
+    entity: "activity",
+    gui: "",
+    translations: [],
+    links: undefined,
+  };
 }
 
 export class OFSPropertyListResponse extends OFSResponse {
-    data: OFSPropertyList = new OFSPropertyList();
+  data: OFSPropertyList = new OFSPropertyList();
 }
