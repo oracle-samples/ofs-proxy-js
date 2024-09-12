@@ -6,9 +6,11 @@
 import { off } from "process";
 
 export type OFSCredentials = {
-    instance: string;
-    clientId: string;
-    clientSecret: string;
+    instance?: string;
+    clientId?: string;
+    clientSecret?: string;
+    token?: string;
+    baseURL?: string;
 };
 
 export interface OFSResponseInterface {

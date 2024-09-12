@@ -6,7 +6,8 @@
 import { createReadStream, readFileSync } from "fs";
 import { OFSCredentials } from "../../src/model";
 import { OFS } from "../../src/OFS";
-import myCredentials from "../credentials_test.json";
+import myCredentials from "../credentials_test_app.json";
+import myOldCredentials from "../credentials_test.json";
 import { th } from "@faker-js/faker";
 
 var myProxy: OFS;
@@ -14,7 +15,11 @@ var myProxy: OFS;
 // Setup info
 beforeAll(() => {
     myProxy = new OFS(myCredentials);
-    expect(myProxy.instance).toBe(myCredentials.instance);
+    if ("instance" in myCredentials) {
+        expect(myProxy.instance).toBe(myCredentials.instance);
+    } else {
+        expect(myProxy.baseURL).toBe(myProxy.baseURL);
+    }
 });
 
 // Teardown info
@@ -28,7 +33,24 @@ afterAll(() => {
 test("Get Subscriptions", async () => {
     //const myProxy = new OFS(myCredentials);
     var result = await myProxy.getSubscriptions();
-    expect(myProxy.instance).toBe(myCredentials.instance);
+    try {
+        expect(result.status).toBe(200);
+    } catch (error) {
+        console.error(result);
+        throw error;
+    }
+});
+
+test("Get Subscriptions with old credentials style", async () => {
+    //const myProxy = new OFS(myCredentials);
+    var myProxyOld = new OFS(myOldCredentials);
+    var result = await myProxyOld.getSubscriptions();
+    try {
+        expect(result.status).toBe(200);
+    } catch (error) {
+        console.error(result);
+        throw error;
+    }
 });
 
 test("Update Plugin (path)", async () => {

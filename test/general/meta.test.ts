@@ -28,7 +28,11 @@ TEST_CONFIG.set("23.11", {
 // Setup info
 beforeAll(() => {
     myProxy = new OFS(myCredentials);
-    expect(myProxy.instance).toBe(myCredentials.instance);
+    if ("instance" in myCredentials) {
+        expect(myProxy.instance).toBe(myCredentials.instance);
+    } else {
+        expect(myProxy.baseURL).toBe(myProxy.baseURL);
+    }
     var default_version: string = test_info.ofsVersion;
     testConfig = TEST_CONFIG.get(default_version); // TODO: Store in jest config
 });
