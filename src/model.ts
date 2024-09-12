@@ -10,6 +10,7 @@ export type OFSCredentials = {
     clientId?: string;
     clientSecret?: string;
     token?: string;
+    baseURL?: string;
 };
 
 export interface OFSResponseInterface {

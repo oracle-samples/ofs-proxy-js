@@ -28,9 +28,13 @@ export class OFS {
     public set credentials(v: OFSCredentials) {
         this._credentials = v;
         this._hash = OFS.authenticateUser(v);
-        this._baseURL = new URL(
-            `https://${this.instance}.${OFS.DEFAULT_DOMAIN}`
-        );
+        if ("baseURL" in v && v.baseURL != "") {
+            this._baseURL = new URL(v.baseURL!);
+        } else {
+            this._baseURL = new URL(
+                `https://${this.instance}.${OFS.DEFAULT_DOMAIN}`
+            );
+        }
     }
 
     public get authorization(): string {
@@ -44,7 +48,9 @@ export class OFS {
     public get instance(): string {
         return this.credentials.instance || "";
     }
-
+    public get baseURL(): string {
+        return this.credentials.baseURL || "";
+    }
     private static authenticateUser(credentials: OFSCredentials): string {
         if ("token" in credentials && credentials.token != "") {
             return "Bearer " + credentials.token;

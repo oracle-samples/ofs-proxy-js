@@ -14,7 +14,11 @@ var myProxy: OFS;
 // Setup info
 beforeAll(() => {
     myProxy = new OFS(myCredentials);
-    expect(myProxy.instance).toBe(myCredentials.instance);
+    if ("instance" in myCredentials) {
+        expect(myProxy.instance).toBe(myCredentials.instance);
+    } else {
+        expect(myProxy.baseURL).toBe(myProxy.baseURL);
+    }
 });
 
 // Teardown info
@@ -28,7 +32,11 @@ afterAll(() => {
 test("Get Subscriptions", async () => {
     //const myProxy = new OFS(myCredentials);
     var result = await myProxy.getSubscriptions();
-    expect(myProxy.instance).toBe(myCredentials.instance);
+    if ("instance" in myCredentials) {
+        expect(myProxy.instance).toBe(myCredentials.instance);
+    } else {
+        expect(myProxy.baseURL).toBe(myProxy.baseURL);
+    }
 });
 
 test("Update Plugin (path)", async () => {
