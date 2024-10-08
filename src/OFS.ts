@@ -370,7 +370,47 @@ export class OFS {
         const partialURL = `/rest/ofscCore/v1/activities/${aid}`;
         return this._patch(partialURL, data);
     }
-
+    async moveActivity(aid: number, data: any): Promise<OFSResponse> {
+        return this._executeActivityAction(aid, data, "move");
+    }
+    async delayActivity(aid: number, data: any): Promise<OFSResponse> {
+        return this._executeActivityAction(aid, data, "delay");
+    }
+    async reopenActivity(aid: number, data: any): Promise<OFSResponse> {
+        return this._executeActivityAction(aid, data, "reopen");
+    }
+    async startActivity(aid: number, data: any): Promise<OFSResponse> {
+        return this._executeActivityAction(aid, data, "start");
+    }
+    async suspendActivity(aid: number, data: any): Promise<OFSResponse> {
+        return this._executeActivityAction(aid, data, "suspend");
+    }
+    async completeActivity(aid: number, data: any): Promise<OFSResponse> {
+        return this._executeActivityAction(aid, data, "complete");
+    }
+    async stopTravel(aid: number, data: any): Promise<OFSResponse> {
+        return this._executeActivityAction(aid, data, "stopTravel");
+    }
+    async cancelActivity(aid: number, data: any): Promise<OFSResponse> {
+        return this._executeActivityAction(aid, data, "cancel");
+    }
+    async startPrework(aid: number, data: any): Promise<OFSResponse> {
+        return this._executeActivityAction(aid, data, "startPrework");
+    }
+    async enrouteActivity(aid: number, data: any): Promise<OFSResponse> {
+        return this._executeActivityAction(aid, data, "enroute");
+    }
+    async notDoneActivity(aid: number, data: any): Promise<OFSResponse> {
+        return this._executeActivityAction(aid, data, "notDone");
+    }
+    private async _executeActivityAction(
+        aid: number,
+        data: any,
+        action: any
+    ): Promise<OFSResponse> {
+        const partialURL = `/rest/ofscCore/v1/activities/${aid}/custom-actions/${action}`;
+        return this._post(partialURL, data);
+    }
     async getActivityFilePropertyContent(
         aid: number,
         propertyLabel: string,

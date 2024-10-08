@@ -8,18 +8,17 @@ In order to use this library you need to have access to an Oracle Field Service 
 
 ## Installation
 
-
 1. Add the dependency to your project
-   
-   `npm install <LOCAL REPOSITORY DIR>`         (if you have cloned the repository)
 
-   `npm install https://github.com/oracle-samples/ofs-proxy-js.git`    (when installing directly from GitHub)
+    `npm install <LOCAL REPOSITORY DIR>` (if you have cloned the repository)
 
-   `npm install @ofs-users/proxy`    (when installing from npm)
+    `npm install https://github.com/oracle-samples/ofs-proxy-js.git` (when installing directly from GitHub)
+
+    `npm install @ofs-users/proxy` (when installing from npm)
 
 2. To use the library in your code:
 
-   `import {OFS} from "@ofs-users/proxy"`
+    `import {OFS} from "@ofs-users/proxy"`
 
 ## Functions implemented (may not be complete)
 
@@ -34,6 +33,28 @@ In order to use this library you need to have access to an Oracle Field Service 
 `deleteActivity(activityId)`: Delete activity
 
 `updateActivity(activityId, activityData)`: Update activity details
+
+`moveActivity(activityId, activityData)`: Move activity
+
+`delayActivity(activityId, activityData)`: Delay activity
+
+`reopenActivity(activityId, activityData)`: Reopen activity
+
+`startActivity(activityId, activityData)`: Start activity
+
+`suspendActivity(activityId, activityData)`: Suspend activity
+
+`completeActivity(activityId, activityData)`: Complete activity
+
+`cancelActivity(activityId, activityData)`: Cancel activity
+
+`notDoneActivity(activityId, activityData)`: Set activity to Not Done status
+
+`startPrework(activityId, activityData)`: Start activity prework
+
+`stopTravel(activityId, activityData)`: Stop Travel ( From Enroute to Pending )
+
+`enrouteActivity(activityId, activityData)`: Stop Travel ( From Pending to Enroute )
 
 `setActivityFileProperty(activityId, propertyId, file)`: Set file property
 
@@ -75,13 +96,13 @@ Please see the `docs/` directory for documentation and a simple example
 
 ## Version History
 
-| Version | Comments |
-| ---------| ----------- |
-| 0.1| Added `getActivityDetails`, `updateActivity`, `getSubscriptions` |
-| 1.1| Added `importPlugins` |
-| 1.2| Added `createActivity`, `deleteActivity` |
-| 1.6| Added `getUsers`, `getUserDetails`, `getAllUsers` |
-| 1.8| Added `getProperties`, `getPropertyDetails`, `updateProperty` `createReplaceProperty` |
+| Version | Comments                                                                              |
+| ------- | ------------------------------------------------------------------------------------- |
+| 0.1     | Added `getActivityDetails`, `updateActivity`, `getSubscriptions`                      |
+| 1.1     | Added `importPlugins`                                                                 |
+| 1.2     | Added `createActivity`, `deleteActivity`                                              |
+| 1.6     | Added `getUsers`, `getUserDetails`, `getAllUsers`                                     |
+| 1.8     | Added `getProperties`, `getPropertyDetails`, `updateProperty` `createReplaceProperty` |
 
 ## Contributing
 
