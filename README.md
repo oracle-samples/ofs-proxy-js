@@ -1,6 +1,6 @@
 # Oracle Field Service Proxy
 
-A Javascript proxy to access Oracle Field Service cloud via REST API. For more information about the REST API please visit [the oficial documentation](https://www.oracle.com/pls/topic/lookup?ctx=en/cloud/saas/field-service&ID=field-service)
+A Javascript proxy to access Oracle Field Service cloud via REST API. For more information about the REST API please visit [the official documentation](https://www.oracle.com/pls/topic/lookup?ctx=en/cloud/saas/field-service&ID=field-service)
 
 ## Prerequisites
 
@@ -25,8 +25,6 @@ In order to use this library you need to have access to an Oracle Field Service 
 ### Core: Activity Management
 
 `getActivities()`: Get existing activities
-
-`updateActivity(activityId, activityData)`: Update activity details
 
 `createActivity(activityData)`: Create activity
 
@@ -80,7 +78,11 @@ In order to use this library you need to have access to an Oracle Field Service 
 
 `importPlugins(file?, data?)`: Import plugin by path or via an XML string
 
-### Metadata: Property Management
+### Metadata:
+
+`getTimeslots()` : Get a list of configured timeslots
+
+_Property Management_
 
 `getProperties()`: Get existing properties
 
