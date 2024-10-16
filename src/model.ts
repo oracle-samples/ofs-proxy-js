@@ -109,13 +109,26 @@ export interface OFSGetPropertiesParams {
     offset?: number;
     type?: number;
 }
-class OFSPropertyList {
+export class OFSPropertyList {
     items: OFSPropertyDetails[] = [];
     limit: number = 0;
     offset: number = 0;
     totalResults: number = 0;
 }
-
+export class OFSTimeslot {
+    active: boolean = false;
+    isAllDay: boolean = false;
+    timeEnd: string = "";
+    timeStart: string = "";
+    label: string = "";
+    name: string = "";
+}
+export class OFSTimeslotsList {
+    items: OFSTimeslot[] = [];
+    limit: number = 0;
+    offset: number = 0;
+    totalResults: number = 0;
+}
 export class OFSSubscriptionResponse extends OFSResponse {
     data: SubscriptionListResponse = {
         totalResults: 0,
@@ -145,4 +158,8 @@ export class OFSPropertyDetailsResponse extends OFSResponse {
 
 export class OFSPropertyListResponse extends OFSResponse {
     data: OFSPropertyList = new OFSPropertyList();
+}
+
+export class OFSTimeslotsResponse extends OFSResponse {
+    data: OFSTimeslotsList = new OFSTimeslotsList();
 }
