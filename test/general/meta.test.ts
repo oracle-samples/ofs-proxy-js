@@ -18,11 +18,13 @@ var testConfig: any;
 interface MetaTestConfiguration {
     numberOfProperties: number;
     numberOfResourceProperties: number;
+    numberOfTimeslots: number;
 }
 const TEST_CONFIG: Map<string, MetaTestConfiguration> = new Map<string, any>();
 TEST_CONFIG.set("23.11", {
     numberOfProperties: 464,
     numberOfResourceProperties: 34,
+    numberOfTimeslots: 9,
 });
 
 // Setup info
@@ -283,6 +285,20 @@ test("Update custom property", async () => {
     } catch (error) {
         console.log(propertyData);
         console.log(result2);
+        throw error;
+    }
+});
+
+test("Get a list of configured timeslots", async () => {
+    var result = await myProxy.getTimeslots();
+    try {
+        expect(result.status).toBe(200);
+        expect(result.status).toBe(200);
+        expect(result.data.items.length).toBe(testConfig.numberOfTimeslots);
+        expect(result.data.offset).toBe(0);
+        expect(result.data.limit).toBe(100);
+    } catch (error) {
+        console.error(result);
         throw error;
     }
 });

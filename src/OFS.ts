@@ -13,6 +13,7 @@ import {
     OFSPropertyDetails,
     OFSPropertyListResponse,
     OFSGetPropertiesParams,
+    OFSTimeslotsResponse,
 } from "./model";
 
 export * from "./model";
@@ -565,5 +566,11 @@ export class OFS {
     ): Promise<OFSPropertyDetailsResponse> {
         const partialURL = `/rest/ofscMetadata/v1/properties/${data.label}`;
         return this._patch(partialURL, data);
+    }
+
+    //Meta: Timeslots
+    async getTimeslots(): Promise<OFSTimeslotsResponse> {
+        const partialURL = `/rest/ofscMetadata/v1/timeSlots`;
+        return this._get(partialURL);
     }
 }
