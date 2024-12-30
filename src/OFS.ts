@@ -350,12 +350,12 @@ export class OFS {
     async getSubscriptions(
         all: boolean = false
     ): Promise<OFSSubscriptionResponse> {
-        const partialURL = "/rest/ofscCore/v1/subscriptions";
+        const partialURL = "/rest/ofscCore/v1/events/subscriptions";
         return this._get(partialURL, { allSubscriptions: all });
     }
 
     async createSubscription(data: any): Promise<OFSResponse> {
-        const partialURL = "/rest/ofscCore/v1/subscriptions/";
+        const partialURL = "/rest/ofscCore/v1/events/subscriptions/";
         return this._post(partialURL, data);
     }
 
