@@ -5,7 +5,7 @@
     ],
     "name": "@ofs-users/proxy",
     "type": "module",
-    "version": "1.12.4",
+    "version": "1.12.5",
     "description": "A Javascript proxy to access Oracle Field Service via REST API",
     "main": "dist/ofs.es.js",
     "module": "dist/ofs.es.js",
