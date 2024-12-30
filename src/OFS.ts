@@ -350,7 +350,7 @@ export class OFS {
     async getSubscriptions(
         all: boolean = false
     ): Promise<OFSSubscriptionResponse> {
-        const partialURL = "/rest/ofscCore/v1/subscriptions/";
+        const partialURL = "/rest/ofscCore/v1/subscriptions";
         return this._get(partialURL, { allSubscriptions: all });
     }
 
