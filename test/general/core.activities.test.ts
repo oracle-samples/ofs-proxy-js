@@ -283,12 +283,14 @@ test("Get Activities", async () => {
         {
             resources: "SUNRISE",
             dateFrom: "2025-02-01",
-            dateTo: "2025-04-02",
+            dateTo: "2025-03-02",
         },
         0,
         100
     );
-    console.log(result);
+    if (result.status !== 200) {
+        console.log(result);
+    }
     expect(result.status).toBe(200);
     expect(result.data.items.length).toBeGreaterThan(0);
     expect(result.data.items[0].activityId).toBeGreaterThan(0);
@@ -299,13 +301,15 @@ test("Get Activities with includeChildren", async () => {
         {
             resources: "SUNRISE",
             dateFrom: "2025-02-01",
-            dateTo: "2025-04-02",
+            dateTo: "2025-03-02",
             includeChildren: "all",
         },
         0,
         100
     );
-    console.log(result);
+    if (result.status !== 200) {
+        console.log(result);
+    }
     expect(result.status).toBe(200);
     expect(result.data.items.length).toBeGreaterThan(0);
     expect(result.data.items[0].activityId).toBeGreaterThan(0);
@@ -316,14 +320,16 @@ test("Get Activities with all the parameters", async () => {
         {
             resources: "SUNRISE",
             dateFrom: "2025-02-01",
-            dateTo: "2025-04-02",
+            dateTo: "2025-03-02",
             includeChildren: "all",
             includeNonScheduled: true,
         },
         0,
         100
     );
-    console.log(result);
+    if (result.status !== 200) {
+        console.log(result);
+    }
     expect(result.status).toBe(200);
     expect(result.data.items.length).toBeGreaterThan(0);
     expect(result.data.items[0].activityId).toBeGreaterThan(0);

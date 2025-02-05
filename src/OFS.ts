@@ -78,9 +78,6 @@ export class OFS {
             const urlSearchParams = new URLSearchParams(params);
             theURL.search = urlSearchParams.toString();
         }
-        console.log(theURL.toString());
-        console.log(params);
-        console.log(theURL.search);
         var myHeaders = new Headers();
         myHeaders.append("Authorization", this.authorization);
         extraHeaders.forEach((value, key) => {
