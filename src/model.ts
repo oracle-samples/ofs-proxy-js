@@ -163,3 +163,13 @@ export class OFSPropertyListResponse extends OFSResponse {
 export class OFSTimeslotsResponse extends OFSResponse {
     data: OFSTimeslotsList = new OFSTimeslotsList();
 }
+
+export interface OFSGetActivitiesParams {
+    resources: string;
+    dateFrom?: string;
+    dateTo?: string;
+    fields?: string;
+    includeChildren?: string;
+    includeNonScheduled?: boolean;
+    q?: string;
+}

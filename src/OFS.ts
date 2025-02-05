@@ -14,6 +14,7 @@ import {
     OFSPropertyListResponse,
     OFSGetPropertiesParams,
     OFSTimeslotsResponse,
+    OFSGetActivitiesParams,
 } from "./model";
 
 export * from "./model";
@@ -77,6 +78,9 @@ export class OFS {
             const urlSearchParams = new URLSearchParams(params);
             theURL.search = urlSearchParams.toString();
         }
+        console.log(theURL.toString());
+        console.log(params);
+        console.log(theURL.search);
         var myHeaders = new Headers();
         myHeaders.append("Authorization", this.authorization);
         extraHeaders.forEach((value, key) => {
@@ -564,6 +568,20 @@ export class OFS {
     async getUserDetails(uname: string): Promise<OFSResponse> {
         const partialURL = `/rest/ofscCore/v1/users/${uname}`;
         return this._get(partialURL);
+    }
+
+    // Core: Activities Management
+    async getActivities(
+        params: OFSGetActivitiesParams,
+        offset: number = 0,
+        limit: number = 100
+    ): Promise<OFSResponse> {
+        const partialURL = "/rest/ofscCore/v1/activities";
+        return this._get(partialURL, {
+            ...params,
+            offset: offset,
+            limit: limit,
+        });
     }
 
     // Metadata: Plugin Management

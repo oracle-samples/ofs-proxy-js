@@ -277,3 +277,54 @@ test("Get File Property (Full Binary)", async () => {
         throw error;
     }
 });
+
+test("Get Activities", async () => {
+    var result = await myProxy.getActivities(
+        {
+            resources: "SUNRISE",
+            dateFrom: "2025-02-01",
+            dateTo: "2025-04-02",
+        },
+        0,
+        100
+    );
+    console.log(result);
+    expect(result.status).toBe(200);
+    expect(result.data.items.length).toBeGreaterThan(0);
+    expect(result.data.items[0].activityId).toBeGreaterThan(0);
+});
+
+test("Get Activities with includeChildren", async () => {
+    var result = await myProxy.getActivities(
+        {
+            resources: "SUNRISE",
+            dateFrom: "2025-02-01",
+            dateTo: "2025-04-02",
+            includeChildren: "all",
+        },
+        0,
+        100
+    );
+    console.log(result);
+    expect(result.status).toBe(200);
+    expect(result.data.items.length).toBeGreaterThan(0);
+    expect(result.data.items[0].activityId).toBeGreaterThan(0);
+});
+
+test("Get Activities with all the parameters", async () => {
+    var result = await myProxy.getActivities(
+        {
+            resources: "SUNRISE",
+            dateFrom: "2025-02-01",
+            dateTo: "2025-04-02",
+            includeChildren: "all",
+            includeNonScheduled: true,
+        },
+        0,
+        100
+    );
+    console.log(result);
+    expect(result.status).toBe(200);
+    expect(result.data.items.length).toBeGreaterThan(0);
+    expect(result.data.items[0].activityId).toBeGreaterThan(0);
+});
