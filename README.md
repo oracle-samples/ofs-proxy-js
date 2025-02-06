@@ -26,6 +26,8 @@ In order to use this library you need to have access to an Oracle Field Service 
 
 `getActivities()`: Get existing activities
 
+`getAllActivities()`: Get ALL existing activities
+
 `createActivity(activityData)`: Create activity
 
 `deleteActivity(activityId)`: Delete activity

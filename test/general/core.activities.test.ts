@@ -334,3 +334,20 @@ test("Get Activities with all the parameters", async () => {
     expect(result.data.items.length).toBeGreaterThan(0);
     expect(result.data.items[0].activityId).toBeGreaterThan(0);
 });
+
+test("Get All Activities with all the parameters", async () => {
+    var result = await myProxy.getAllActivities({
+        resources: "FLUSA",
+        dateFrom: "2025-02-01",
+        dateTo: "2025-02-01",
+        includeChildren: "all",
+        includeNonScheduled: true,
+    });
+    if (result.status !== 200) {
+        console.log(result);
+    }
+    expect(result.status).toBe(200);
+    expect(result.totalResults).toBeGreaterThan(0);
+    expect(result.items.length).toBeGreaterThan(0);
+    expect(result.items[0].activityId).toBeGreaterThan(0);
+});

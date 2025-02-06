@@ -540,7 +540,7 @@ export class OFS {
         var offset = 0;
         var limit = 100;
         var result: any = undefined;
-        var allResults: any = { totalResults: 0, items: [] };
+        var allResults: any = { status: 200, totalResults: 0, items: [] };
         do {
             result = await this._get(partialURL, {
                 offset: offset,
@@ -580,7 +580,40 @@ export class OFS {
             limit: limit,
         });
     }
-
+    /**
+     * Retrieves all activities from the OFS API.
+     * @returns An object containing all activities.
+     */
+    async getAllActivities(params: OFSGetActivitiesParams) {
+        const partialURL = "/rest/ofscCore/v1/activities";
+        // Start with offset 0 and keep getting results until we get less than 100
+        var offset = 0;
+        var limit = 100;
+        var result: any = undefined;
+        var allResults: any = { status: 200, totalResults: 0, items: [] };
+        do {
+            result = await this._get(partialURL, {
+                ...params,
+                offset: offset,
+                limit: limit,
+            });
+            if (result.status < 400) {
+                if (allResults.totalResults == 0) {
+                    allResults = result.data;
+                    allResults.status = 200;
+                } else {
+                    allResults.items = allResults.items.concat(
+                        result.data.items
+                    );
+                    allResults.totalResults = allResults.items.length;
+                }
+                offset += limit;
+            } else {
+                return result;
+            }
+        } while (result.data.items.length == limit);
+        return allResults;
+    }
     // Metadata: Plugin Management
     async importPlugins(file?: PathLike, data?: string): Promise<OFSResponse> {
         const partialURL =
