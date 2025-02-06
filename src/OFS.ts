@@ -14,6 +14,7 @@ import {
     OFSPropertyListResponse,
     OFSGetPropertiesParams,
     OFSTimeslotsResponse,
+    OFSGetActivitiesParams,
 } from "./model";
 
 export * from "./model";
@@ -49,8 +50,8 @@ export class OFS {
     public get instance(): string {
         return this.credentials.instance || "";
     }
-    public get baseURL(): string {
-        return this.credentials.baseURL || "";
+    public get baseURL(): URL {
+        return this._baseURL || "";
     }
     private static authenticateUser(credentials: OFSCredentials): string {
         if ("token" in credentials && credentials.token != "") {
@@ -347,9 +348,54 @@ export class OFS {
     }
 
     // Core: Subscription Management
-    async getSubscriptions(): Promise<OFSSubscriptionResponse> {
+    async getSubscriptions(
+        all: boolean = false
+    ): Promise<OFSSubscriptionResponse> {
         const partialURL = "/rest/ofscCore/v1/events/subscriptions";
+        return this._get(partialURL, { allSubscriptions: all });
+    }
+
+    async createSubscription(data: any): Promise<OFSResponse> {
+        const partialURL = "/rest/ofscCore/v1/events/subscriptions/";
+        return this._post(partialURL, data);
+    }
+
+    async deleteSubscription(sid: string): Promise<OFSResponse> {
+        const partialURL = `/rest/ofscCore/v1/events/subscriptions/${sid}`;
+        return this._delete(partialURL);
+    }
+
+    async getSubscriptionDetails(sid: string): Promise<OFSResponse> {
+        const partialURL = `/rest/ofscCore/v1/events/subscriptions/${sid}`;
         return this._get(partialURL);
+    }
+
+    // Core: Event Management
+    async getEvents(
+        sid: string,
+        page: string = "lastRequested",
+        since = null,
+        limit: number = 1000
+    ): Promise<OFSResponse> {
+        var params: {
+            subscriptionId: string;
+            page?: string;
+            limit: number;
+            since?: string | null;
+        } = {
+            subscriptionId: sid,
+            page: page,
+            limit: limit,
+            since: since,
+        };
+        if (since == null) {
+            delete params.since;
+        } else {
+            delete params.page;
+        }
+
+        const partialURL = "/rest/ofscCore/v1/events";
+        return this._get(partialURL, params);
     }
 
     // Core: Activity Management
@@ -519,6 +565,20 @@ export class OFS {
     async getUserDetails(uname: string): Promise<OFSResponse> {
         const partialURL = `/rest/ofscCore/v1/users/${uname}`;
         return this._get(partialURL);
+    }
+
+    // Core: Activities Management
+    async getActivities(
+        params: OFSGetActivitiesParams,
+        offset: number = 0,
+        limit: number = 100
+    ): Promise<OFSResponse> {
+        const partialURL = "/rest/ofscCore/v1/activities";
+        return this._get(partialURL, {
+            ...params,
+            offset: offset,
+            limit: limit,
+        });
     }
 
     // Metadata: Plugin Management
