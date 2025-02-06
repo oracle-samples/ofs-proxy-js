@@ -540,7 +540,7 @@ export class OFS {
         var offset = 0;
         var limit = 100;
         var result: any = undefined;
-        var allResults: any = { status: 200, totalResults: 0, items: [] };
+        var allResults: any = { totalResults: 0, items: [] };
         do {
             result = await this._get(partialURL, {
                 offset: offset,
