@@ -8,7 +8,6 @@ import myCredentials from "../credentials_test.json";
 
 import test_info from "../test_config.json";
 import { fa, faker } from "@faker-js/faker";
-
 import type { Config } from "jest";
 import { defaults } from "jest-config";
 
@@ -26,7 +25,11 @@ TEST_CONFIG.set("23.11", {
     numberOfResourceProperties: 34,
     numberOfTimeslots: 9,
 });
-
+TEST_CONFIG.set("25A", {
+    numberOfProperties: 464,
+    numberOfResourceProperties: 45,
+    numberOfTimeslots: 8,
+});
 // Setup info
 beforeAll(() => {
     myProxy = new OFS(myCredentials);
