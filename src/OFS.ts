@@ -112,12 +112,42 @@ export class OFS {
                         response.headers.get("Content-Type") || undefined
                     );
                 } else {
-                    return new OFSResponse(
-                        theURL,
-                        response.status,
-                        response.statusText,
-                        undefined
-                    );
+                    try {
+                        var data;
+                        if (
+                            response.headers
+                                .get("Content-Type")
+                                ?.includes("json")
+                        ) {
+                            data = await response.json();
+                        } else if (
+                            response.headers
+                                .get("Content-Type")
+                                ?.includes("text")
+                        ) {
+                            data = await response.text();
+                        } else {
+                            data = await response.blob();
+                        }
+                        return new OFSResponse(
+                            theURL,
+                            response.status,
+                            undefined,
+                            data,
+                            response.headers.get("Content-Type") || undefined
+                        );
+                    } catch (error) {
+                        console.log(
+                            "error trying to capture the response with status >400",
+                            error
+                        );
+                        return new OFSResponse(
+                            theURL,
+                            response.status,
+                            response.statusText,
+                            undefined
+                        );
+                    }
                 }
             })
             .catch((error) => {
@@ -590,7 +620,13 @@ export class OFS {
         var offset = 0;
         var limit = 100;
         var result: any = undefined;
-        var allResults: any = { status: 200, totalResults: 0, items: [] };
+        var allResults: any = {
+            status: 200,
+            detail: "",
+            title: "",
+            totalResults: 0,
+            items: [],
+        };
         do {
             result = await this._get(partialURL, {
                 ...params,
