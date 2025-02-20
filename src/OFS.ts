@@ -614,11 +614,13 @@ export class OFS {
      * Retrieves all activities from the OFS API.
      * @returns An object containing all activities.
      */
-    async getAllActivities(params: OFSGetActivitiesParams) {
+    async getAllActivities(
+        params: OFSGetActivitiesParams,
+        limit: number = 1000
+    ) {
         const partialURL = "/rest/ofscCore/v1/activities";
         // Start with offset 0 and keep getting results until we get less than 100
         var offset = 0;
-        var limit = 100;
         var result: any = undefined;
         var allResults: any = {
             status: 200,
@@ -633,7 +635,7 @@ export class OFS {
                 offset: offset,
                 limit: limit,
             });
-            if (result.status < 400) {
+            if (result.status == 200) {
                 if (allResults.totalResults == 0) {
                     allResults = result.data;
                     allResults.status = 200;
@@ -641,13 +643,13 @@ export class OFS {
                     allResults.items = allResults.items.concat(
                         result.data.items
                     );
-                    allResults.totalResults = allResults.items.length;
                 }
+                allResults.totalResults = allResults.items.length;
                 offset += limit;
             } else {
                 return result;
             }
-        } while (result.data.items.length == limit);
+        } while (result.data.hasMore == true);
         return allResults;
     }
     // Metadata: Plugin Management

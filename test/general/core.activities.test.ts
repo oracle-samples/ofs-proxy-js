@@ -347,7 +347,6 @@ test("Get All Activities with all the parameters", async () => {
         console.log(result);
     }
     expect(result.status).toBe(200);
-    expect(result.totalResults).toBeGreaterThan(0);
     expect(result.items.length).toBeGreaterThan(0);
     expect(result.items[0].activityId).toBeGreaterThan(0);
 });
@@ -359,9 +358,6 @@ test("Get All Activities with incorrect data", async () => {
         includeChildren: "all",
         includeNonScheduled: true,
     });
-    if (result.status !== 200) {
-        console.log(result);
-    }
     expect(result.status).toBe(400);
     expect(result.data.detail).toContain(
         "Date interval contains more than 31 days"
