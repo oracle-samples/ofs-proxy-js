@@ -61,14 +61,21 @@ export class OFSBulkUpdateResponseResult
 }
 export interface OFSBulkUpdateResponseInterface {
     results: OFSBulkUpdateResponseResultInterace[];
+    status: number;
+    description: any;
 }
 export class OFSBulkUpdateResponse implements OFSBulkUpdateResponseInterface {
     results: OFSBulkUpdateResponseResult[] = [];
-
-    constructor(results?: OFSBulkUpdateResponseResult[]) {
-        if (results) {
-            this.results = results;
-        }
+    status: number = -1;
+    description: any;
+    constructor(
+        results: OFSBulkUpdateResponseResult[] = [],
+        status: number = -1,
+        description: any
+    ) {
+        this.results = results;
+        this.status = status;
+        this.description = description;
     }
 
     addResult(result: OFSBulkUpdateResponseResult): void {
