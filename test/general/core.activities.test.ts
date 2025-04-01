@@ -4,7 +4,7 @@
  */
 
 import { createReadStream, readFileSync } from "fs";
-import { OFSCredentials } from "../../src/model";
+import { OFSCredentials, OFSBulkUpdateRequest } from "../../src/model";
 import { OFS } from "../../src/OFS";
 import myCredentials from "../credentials_test.json";
 import { faker } from "@faker-js/faker";
@@ -30,7 +30,7 @@ afterAll(() => {
 });
 
 test("Get Activity Details", async () => {
-    var aid = 3954799;
+    var aid = 4225599;
     var result = await myProxy.getActivityDetails(aid);
     expect(result.data.activityId).toBe(aid);
 });
@@ -52,6 +52,33 @@ test("Create Activity", async () => {
     // For cleanup
     var activityId = result.data.activityId;
     activityList.push(activityId);
+});
+
+test("Bulk Update Activities", async () => {
+    // Prepare bulk update data
+    var bulkUpdateData: OFSBulkUpdateRequest = {
+        activities: [
+            {
+                apptNumber: "137168134",
+                customerName: "Updated Customer 1",
+                resourceId: "FLUSA",
+            },
+            {
+                apptNumber: "137167626",
+                customerName: "Updated Customer 2",
+                resourceId: "FLUSA",
+            },
+        ],
+        updateParameters: {
+            identifyActivityBy: "apptNumber",
+            ifExistsThenDoNotUpdateFields: [],
+            ifInFinalStatusThen: "doNothing",
+        },
+    };
+
+    // Perform bulk update
+    var bulkUpdateResult = await myProxy.bulkUpdateActivity(bulkUpdateData);
+    expect(bulkUpdateResult.results.length).toBe(2);
 });
 
 test("Delete Activity", async () => {
@@ -282,8 +309,8 @@ test("Get Activities", async () => {
     var result = await myProxy.getActivities(
         {
             resources: "SUNRISE",
-            dateFrom: "2025-02-01",
-            dateTo: "2025-03-02",
+            dateFrom: "2025-04-01",
+            dateTo: "2025-04-02",
         },
         0,
         100
@@ -300,8 +327,8 @@ test("Get Activities with includeChildren", async () => {
     var result = await myProxy.getActivities(
         {
             resources: "SUNRISE",
-            dateFrom: "2025-02-01",
-            dateTo: "2025-03-02",
+            dateFrom: "2025-04-01",
+            dateTo: "2025-04-02",
             includeChildren: "all",
         },
         0,
