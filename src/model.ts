@@ -20,6 +20,61 @@ export interface OFSResponseInterface {
     url: URL;
     contentType?: string;
 }
+export interface OFSBulkUpdateResponseResultInterace {
+    activityKeys: any;
+    errors: any[];
+    operationsFailed: any[];
+    operationsPerformed: any[];
+    warnings: any[];
+}
+export class OFSBulkUpdateResponseResult
+    implements OFSBulkUpdateResponseResultInterace
+{
+    activityKeys: any = {};
+    errors: any[] = [];
+    operationsFailed: any[] = [];
+    operationsPerformed: any[] = [];
+    warnings: any[] = [];
+    constructor(
+        activityKeys?: any,
+        errors?: any[],
+        operationsFailed?: any[],
+        operationsPerformed?: any[],
+        warnings?: any[]
+    ) {
+        if (activityKeys) {
+            this.activityKeys = activityKeys;
+        }
+        if (errors) {
+            this.errors = errors;
+        }
+        if (operationsFailed) {
+            this.operationsFailed = operationsFailed;
+        }
+        if (operationsPerformed) {
+            this.operationsPerformed = operationsPerformed;
+        }
+        if (warnings) {
+            this.warnings = warnings;
+        }
+    }
+}
+export interface OFSBulkUpdateResponseInterface {
+    results: OFSBulkUpdateResponseResultInterace[];
+}
+export class OFSBulkUpdateResponse implements OFSBulkUpdateResponseInterface {
+    results: OFSBulkUpdateResponseResult[] = [];
+
+    constructor(results?: OFSBulkUpdateResponseResult[]) {
+        if (results) {
+            this.results = results;
+        }
+    }
+
+    addResult(result: OFSBulkUpdateResponseResult): void {
+        this.results.push(result);
+    }
+}
 
 export class OFSResponse implements OFSResponseInterface {
     status: number = -1;
@@ -172,4 +227,67 @@ export interface OFSGetActivitiesParams {
     includeChildren?: string;
     includeNonScheduled?: boolean;
     q?: string;
+}
+
+export interface OFSBulkUpdateRequestInterface {
+    activities: any[];
+    updateParameters: OFSBulkUpdateRequestParamsInterface;
+}
+
+export class OFSBulkUpdateRequest implements OFSBulkUpdateRequestInterface {
+    activities: any[] = [];
+    updateParameters: OFSBulkUpdateRequestParams = {
+        ifInFinalStatusThen: "doNothing",
+        identifyActivityBy: "apptNumber",
+        ifExistsThenDoNotUpdateFields: [],
+    };
+
+    constructor(
+        activities: any[],
+        updateParameters?: OFSBulkUpdateRequestParams
+    ) {
+        this.activities = activities;
+        this.updateParameters = updateParameters || {
+            ifInFinalStatusThen: "doNothing",
+            identifyActivityBy: "apptNumber",
+            ifExistsThenDoNotUpdateFields: [],
+        };
+    }
+}
+export interface OFSBulkUpdateRequestParamsInterface {
+    fallbackResourceId?: string;
+    identifyActivityBy?: string;
+    ifExistsThenDoNotUpdateFields?: any[];
+    ifInFinalStatusThen: string;
+    inventoryPropertiesUpdateMode?: string;
+}
+
+export class OFSBulkUpdateRequestParams
+    implements OFSBulkUpdateRequestParamsInterface
+{
+    fallbackResourceId?: string;
+    identifyActivityBy: string = "apptNumber"; // default value
+    ifExistsThenDoNotUpdateFields: any[] = [];
+    ifInFinalStatusThen: string = "doNothing"; // default value
+    inventoryPropertiesUpdateMode?: string;
+
+    constructor(
+        fallbackResourceId?: string,
+        identifyActivityBy?: string,
+        ifExistsThenDoNotUpdateFields?: any[],
+        ifInFinalStatusThen?: string,
+        inventoryPropertiesUpdateMode?: string
+    ) {
+        this.fallbackResourceId = fallbackResourceId;
+        if (identifyActivityBy) {
+            this.identifyActivityBy = identifyActivityBy;
+        }
+        if (ifExistsThenDoNotUpdateFields) {
+            this.ifExistsThenDoNotUpdateFields = ifExistsThenDoNotUpdateFields;
+        }
+        if (ifInFinalStatusThen) {
+            this.ifInFinalStatusThen = ifInFinalStatusThen;
+        }
+        this.inventoryPropertiesUpdateMode = inventoryPropertiesUpdateMode;
+    }
 }
