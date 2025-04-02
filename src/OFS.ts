@@ -313,14 +313,22 @@ export class OFS {
                 // Your code for handling the data you get from the API
                 if (response.status < 400) {
                     var data = await response.json();
-                    return new OFSBulkUpdateResponse(data.results || []);
+                    return new OFSBulkUpdateResponse(
+                        data.results || [],
+                        response.status,
+                        response.statusText
+                    );
                 } else {
-                    return new OFSBulkUpdateResponse(await response.json());
+                    return new OFSBulkUpdateResponse(
+                        [],
+                        response.status,
+                        await response.json()
+                    );
                 }
             })
             .catch((error) => {
-                console.log("error", error);
-                return new OFSBulkUpdateResponse([]);
+                console.log("Error on _postBulkUpdate - ", error);
+                return new OFSBulkUpdateResponse([], -1, error);
             });
         return fetchPromise;
     }
