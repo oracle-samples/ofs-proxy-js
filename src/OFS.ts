@@ -624,7 +624,7 @@ export class OFS {
         offset: number = 0,
         limit: number = 100
     ): Promise<OFSResponse> {
-        const partialURL = "/rest/ofscCore/v1/activities";
+        const partialURL = "/rest/ofscCore/v1/activities/custom-actions/search";
         return this._get(partialURL, {
             ...params,
             offset: offset,

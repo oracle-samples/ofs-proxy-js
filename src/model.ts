@@ -175,13 +175,13 @@ export interface OFSGetActivitiesParams {
 }
 
 export interface OFSSearchForActivitiesParams {
-    dateFrom?: string;
-    dateTo?: string;
+    dateFrom: string;
+    dateTo: string;
+    searchForValue: string;
+    searchInField: string;
     fields?: string;
     includeMultiday?: string;
     includeNonScheduled?: boolean;
-    searchForValue: string;
-    searchInField: string;
 }
 
 export interface OFSBulkUpdateRequestInterface {

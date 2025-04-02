@@ -78,9 +78,6 @@ test("Bulk Update Activities", async () => {
 
     // Perform bulk update
     var bulkUpdateResult = await myProxy.bulkUpdateActivity(bulkUpdateData);
-    console.log(
-        `BULK UPDATE RESPONSE ${JSON.stringify(bulkUpdateResult.data, null, 2)}`
-    );
     expect(bulkUpdateResult.data.results.length).toBe(2);
 });
 
@@ -327,8 +324,11 @@ test("Get Activities", async () => {
 });
 
 test("Search for Activities", async () => {
+    var currentDate = new Date().toISOString().split("T")[0];
     var result = await myProxy.searchForActivities(
         {
+            dateFrom: currentDate,
+            dateTo: currentDate,
             searchForValue: "137165209",
             searchInField: "apptNumber",
         },
@@ -336,10 +336,24 @@ test("Search for Activities", async () => {
         100
     );
     if (result.status !== 200) {
-        console.log(result);
+        console.log(
+            `Search for Activities ERROR: ${JSON.stringify(
+                result.data,
+                null,
+                2
+            )}`
+        );
+    } else {
+        console.log(
+            `Search for Activities Result: ${JSON.stringify(
+                result.data,
+                null,
+                2
+            )}`
+        );
     }
     expect(result.status).toBe(200);
-    expect(result.data.items.length).toBe(1);
+    expect(result.data.items.length).toBe(2);
 });
 
 test("Get Activities with includeChildren", async () => {
