@@ -78,7 +78,7 @@ test("Bulk Update Activities", async () => {
 
     // Perform bulk update
     var bulkUpdateResult = await myProxy.bulkUpdateActivity(bulkUpdateData);
-    expect(bulkUpdateResult.results.length).toBe(2);
+    expect(bulkUpdateResult.data.results.length).toBe(2);
 });
 
 test("Delete Activity", async () => {
@@ -321,6 +321,39 @@ test("Get Activities", async () => {
     expect(result.status).toBe(200);
     expect(result.data.items.length).toBeGreaterThan(0);
     expect(result.data.items[0].activityId).toBeGreaterThan(0);
+});
+
+test("Search for Activities", async () => {
+    var currentDate = new Date().toISOString().split("T")[0];
+    var result = await myProxy.searchForActivities(
+        {
+            dateFrom: currentDate,
+            dateTo: currentDate,
+            searchForValue: "137165209",
+            searchInField: "apptNumber",
+        },
+        0,
+        100
+    );
+    if (result.status !== 200) {
+        console.log(
+            `Search for Activities ERROR: ${JSON.stringify(
+                result.data,
+                null,
+                2
+            )}`
+        );
+    } else {
+        console.log(
+            `Search for Activities Result: ${JSON.stringify(
+                result.data,
+                null,
+                2
+            )}`
+        );
+    }
+    expect(result.status).toBe(200);
+    expect(result.data.items.length).toBe(2);
 });
 
 test("Get Activities with includeChildren", async () => {

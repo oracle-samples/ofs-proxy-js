@@ -20,68 +20,6 @@ export interface OFSResponseInterface {
     url: URL;
     contentType?: string;
 }
-export interface OFSBulkUpdateResponseResultInterace {
-    activityKeys: any;
-    errors: any[];
-    operationsFailed: any[];
-    operationsPerformed: any[];
-    warnings: any[];
-}
-export class OFSBulkUpdateResponseResult
-    implements OFSBulkUpdateResponseResultInterace
-{
-    activityKeys: any = {};
-    errors: any[] = [];
-    operationsFailed: any[] = [];
-    operationsPerformed: any[] = [];
-    warnings: any[] = [];
-    constructor(
-        activityKeys?: any,
-        errors?: any[],
-        operationsFailed?: any[],
-        operationsPerformed?: any[],
-        warnings?: any[]
-    ) {
-        if (activityKeys) {
-            this.activityKeys = activityKeys;
-        }
-        if (errors) {
-            this.errors = errors;
-        }
-        if (operationsFailed) {
-            this.operationsFailed = operationsFailed;
-        }
-        if (operationsPerformed) {
-            this.operationsPerformed = operationsPerformed;
-        }
-        if (warnings) {
-            this.warnings = warnings;
-        }
-    }
-}
-export interface OFSBulkUpdateResponseInterface {
-    results: OFSBulkUpdateResponseResultInterace[];
-    status: number;
-    description: any;
-}
-export class OFSBulkUpdateResponse implements OFSBulkUpdateResponseInterface {
-    results: OFSBulkUpdateResponseResult[] = [];
-    status: number = -1;
-    description: any;
-    constructor(
-        results: OFSBulkUpdateResponseResult[] = [],
-        status: number = -1,
-        description: any
-    ) {
-        this.results = results;
-        this.status = status;
-        this.description = description;
-    }
-
-    addResult(result: OFSBulkUpdateResponseResult): void {
-        this.results.push(result);
-    }
-}
 
 export class OFSResponse implements OFSResponseInterface {
     status: number = -1;
@@ -234,6 +172,16 @@ export interface OFSGetActivitiesParams {
     includeChildren?: string;
     includeNonScheduled?: boolean;
     q?: string;
+}
+
+export interface OFSSearchForActivitiesParams {
+    dateFrom: string;
+    dateTo: string;
+    searchForValue: string;
+    searchInField: string;
+    fields?: string;
+    includeMultiday?: string;
+    includeNonScheduled?: boolean;
 }
 
 export interface OFSBulkUpdateRequestInterface {

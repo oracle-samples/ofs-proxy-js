@@ -9,14 +9,13 @@ import {
     OFSCredentials,
     OFSPropertyDetailsResponse,
     OFSResponse,
-    OFSBulkUpdateResponse,
-    OFSBulkUpdateResponseResult,
     OFSSubscriptionResponse,
     OFSPropertyDetails,
     OFSPropertyListResponse,
     OFSGetPropertiesParams,
     OFSTimeslotsResponse,
     OFSGetActivitiesParams,
+    OFSSearchForActivitiesParams,
     OFSBulkUpdateRequest,
 } from "./model";
 
@@ -295,44 +294,6 @@ export class OFS {
         return fetchPromise;
     }
 
-    private _postBulkUpdate(
-        partialURL: string,
-        data: OFSBulkUpdateRequest
-    ): Promise<OFSBulkUpdateResponse> {
-        var theURL = new URL(partialURL, this._baseURL);
-        var myHeaders = new Headers();
-        myHeaders.append("Authorization", this.authorization);
-        myHeaders.append("Content-Type", "application/json");
-        var requestOptions: RequestInit = {
-            method: "POST",
-            headers: myHeaders,
-            body: JSON.stringify(data),
-        };
-        const fetchPromise = fetch(theURL, requestOptions)
-            .then(async function (response) {
-                // Your code for handling the data you get from the API
-                if (response.status < 400) {
-                    var data = await response.json();
-                    return new OFSBulkUpdateResponse(
-                        data.results || [],
-                        response.status,
-                        response.statusText
-                    );
-                } else {
-                    return new OFSBulkUpdateResponse(
-                        [],
-                        response.status,
-                        await response.json()
-                    );
-                }
-            })
-            .catch((error) => {
-                console.log("Error on _postBulkUpdate - ", error);
-                return new OFSBulkUpdateResponse([], -1, error);
-            });
-        return fetchPromise;
-    }
-
     private _postMultiPart(
         partialURL: string,
         data: FormData
@@ -470,12 +431,10 @@ export class OFS {
     }
 
     // Core: Activity Management
-    async bulkUpdateActivity(
-        data: OFSBulkUpdateRequest
-    ): Promise<OFSBulkUpdateResponse> {
+    async bulkUpdateActivity(data: OFSBulkUpdateRequest): Promise<OFSResponse> {
         const partialURL =
             "/rest/ofscCore/v1/activities/custom-actions/bulkUpdate";
-        return this._postBulkUpdate(partialURL, data);
+        return this._post(partialURL, data);
     }
     async createActivity(data: any): Promise<OFSResponse> {
         const partialURL = "/rest/ofscCore/v1/activities";
@@ -652,6 +611,20 @@ export class OFS {
         limit: number = 100
     ): Promise<OFSResponse> {
         const partialURL = "/rest/ofscCore/v1/activities";
+        return this._get(partialURL, {
+            ...params,
+            offset: offset,
+            limit: limit,
+        });
+    }
+
+    // Core: Activities Management
+    async searchForActivities(
+        params: OFSSearchForActivitiesParams,
+        offset: number = 0,
+        limit: number = 100
+    ): Promise<OFSResponse> {
+        const partialURL = "/rest/ofscCore/v1/activities/custom-actions/search";
         return this._get(partialURL, {
             ...params,
             offset: offset,
