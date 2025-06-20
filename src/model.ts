@@ -246,3 +246,41 @@ export class OFSBulkUpdateRequestParams
         this.inventoryPropertiesUpdateMode = inventoryPropertiesUpdateMode;
     }
 }
+
+export interface OFSGetResourcesParams {
+    canBeTeamHolder?: boolean;
+    canParticipateInTeam?: boolean;
+    expand?: string[];
+    fields?: string[];
+    limit?: number;
+    offset?: number;
+}
+
+export interface OFSResource {
+    resourceId: string;
+    name: string;
+    status: string;
+    resourceType: string;
+    email?: string;
+    phone?: string;
+    language?: string;
+    timeZone?: string;
+}
+
+export interface OFSResourceListResponse {
+    totalResults: number;
+    limit: number;
+    offset: number;
+    items: OFSResource[];
+    links?: any;
+}
+
+export class OFSResourceResponse extends OFSResponse {
+    data: OFSResourceListResponse = {
+        totalResults: 0,
+        limit: 100,
+        offset: 0,
+        items: [],
+        links: undefined,
+    };
+}

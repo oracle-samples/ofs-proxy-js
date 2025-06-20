@@ -116,3 +116,66 @@ test("Get all Users", async () => {
     expect(result.items.length).toEqual(result.totalResults);
     expect(result.items[0].login).toBe("admin");
 });
+
+test("Get Resources No offset", async () => {
+    var result = await myProxy.getResources();
+    expect(result.status).toBe(200);
+    expect(result.data.totalResults).toBeGreaterThan(0);
+    expect(result.data.items.length).toBeGreaterThan(0);
+    expect(result.data.limit).toBe(100);
+    expect(result.data.offset).toBe(0);
+    expect(result.data.items[0]).toHaveProperty("resourceId");
+    expect(result.data.items[0]).toHaveProperty("name");
+    expect(result.data.items[0]).toHaveProperty("status");
+    expect(result.data.items[0]).toHaveProperty("resourceType");
+});
+
+test("Get Resources with limit", async () => {
+    var result = await myProxy.getResources({ limit: 5 });
+    expect(result.status).toBe(200);
+    expect(result.data.totalResults).toBeGreaterThan(0);
+    expect(result.data.items.length).toBeLessThanOrEqual(5);
+    expect(result.data.limit).toBe(5);
+    expect(result.data.offset).toBe(0);
+});
+
+test("Get Resources with offset and limit", async () => {
+    var result = await myProxy.getResources({ offset: 2, limit: 3 });
+    expect(result.status).toBe(200);
+    expect(result.data.totalResults).toBeGreaterThan(0);
+    expect(result.data.items.length).toBeLessThanOrEqual(3);
+    expect(result.data.limit).toBe(3);
+    expect(result.data.offset).toBe(2);
+});
+
+test("Get Resources with canBeTeamHolder filter", async () => {
+    var result = await myProxy.getResources({ canBeTeamHolder: true });
+    expect(result.status).toBe(200);
+    expect(result.data.totalResults).toBeGreaterThanOrEqual(0);
+    if (result.data.items.length > 0) {
+        expect(result.data.items[0]).toHaveProperty("resourceId");
+        expect(result.data.items[0]).toHaveProperty("name");
+    }
+});
+
+test("Get Resources with fields filter", async () => {
+    var result = await myProxy.getResources({ fields: ["resourceId", "name", "status"] });
+    expect(result.status).toBe(200);
+    expect(result.data.totalResults).toBeGreaterThan(0);
+    expect(result.data.items.length).toBeGreaterThan(0);
+    expect(result.data.items[0]).toHaveProperty("resourceId");
+    expect(result.data.items[0]).toHaveProperty("name");
+    expect(result.data.items[0]).toHaveProperty("status");
+});
+
+test("Get all Resources", async () => {
+    var result = await myProxy.getAllResources();
+    expect(result.totalResults).toBeGreaterThan(0);
+    expect(result.items.length).toEqual(result.totalResults);
+    if (result.items.length > 0) {
+        expect(result.items[0]).toHaveProperty("resourceId");
+        expect(result.items[0]).toHaveProperty("name");
+        expect(result.items[0]).toHaveProperty("status");
+        expect(result.items[0]).toHaveProperty("resourceType");
+    }
+});

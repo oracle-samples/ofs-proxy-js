@@ -28,11 +28,15 @@ In order to use this library you need to have access to an Oracle Field Service 
 
 `getAllActivities()`: Get ALL existing activities
 
+`searchForActivities(params)` : Search a list of activities based on some input params
+
 `createActivity(activityData)`: Create activity
 
 `deleteActivity(activityId)`: Delete activity
 
 `updateActivity(activityId, activityData)`: Update activity details
+
+`bulkUpdateActivity(data)`: Update a list of activities
 
 `moveActivity(activityId, activityData)`: Move activity
 
@@ -75,6 +79,19 @@ In order to use this library you need to have access to an Oracle Field Service 
 `getUserDetails(userId)`: Get user details
 
 `getAllUsers()`: Get all users
+
+### Core: Resource Management
+
+`getResources(params?)`: Get existing resources with optional filtering parameters
+
+- `params.canBeTeamHolder` (boolean): Filter resources that can be team holders
+- `params.canParticipateInTeam` (boolean): Filter resources that can participate in teams  
+- `params.expand` (array): Include sub-entities like inventories, workZones, workSkills
+- `params.fields` (array): Specify which resource fields to return
+- `params.limit` (number): Number of items to return (1-100, default 100)
+- `params.offset` (number): Starting record number (default 0)
+
+`getAllResources(params?)`: Get all resources using pagination (excludes limit/offset from params)
 
 ### Core: Plugin Management
 
