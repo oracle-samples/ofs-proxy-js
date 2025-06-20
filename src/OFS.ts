@@ -17,6 +17,8 @@ import {
     OFSGetActivitiesParams,
     OFSSearchForActivitiesParams,
     OFSBulkUpdateRequest,
+    OFSGetResourcesParams,
+    OFSResourceResponse,
 } from "./model";
 
 export * from "./model";
@@ -602,6 +604,83 @@ export class OFS {
     async getUserDetails(uname: string): Promise<OFSResponse> {
         const partialURL = `/rest/ofscCore/v1/users/${uname}`;
         return this._get(partialURL);
+    }
+
+    // Core: Resource Management
+    async getResources(
+        params: OFSGetResourcesParams = {}
+    ): Promise<OFSResourceResponse> {
+        const partialURL = "/rest/ofscCore/v1/resources";
+        const queryParams: any = {};
+        
+        if (params.canBeTeamHolder !== undefined) {
+            queryParams.canBeTeamHolder = params.canBeTeamHolder;
+        }
+        if (params.canParticipateInTeam !== undefined) {
+            queryParams.canParticipateInTeam = params.canParticipateInTeam;
+        }
+        if (params.expand && params.expand.length > 0) {
+            queryParams.expand = params.expand.join(',');
+        }
+        if (params.fields && params.fields.length > 0) {
+            queryParams.fields = params.fields.join(',');
+        }
+        if (params.limit !== undefined) {
+            queryParams.limit = params.limit;
+        }
+        if (params.offset !== undefined) {
+            queryParams.offset = params.offset;
+        }
+
+        return this._get(partialURL, queryParams);
+    }
+
+    /**
+     * Retrieves all resources from the OFS API.
+     * @param params Optional parameters for filtering resources
+     * @returns An object containing all resources.
+     */
+    async getAllResources(params: Omit<OFSGetResourcesParams, 'limit' | 'offset'> = {}) {
+        const partialURL = "/rest/ofscCore/v1/resources";
+        var offset = 0;
+        var limit = 100;
+        var result: any = undefined;
+        var allResults: any = { totalResults: 0, items: [] };
+        
+        const queryParams: any = {};
+        if (params.canBeTeamHolder !== undefined) {
+            queryParams.canBeTeamHolder = params.canBeTeamHolder;
+        }
+        if (params.canParticipateInTeam !== undefined) {
+            queryParams.canParticipateInTeam = params.canParticipateInTeam;
+        }
+        if (params.expand && params.expand.length > 0) {
+            queryParams.expand = params.expand.join(',');
+        }
+        if (params.fields && params.fields.length > 0) {
+            queryParams.fields = params.fields.join(',');
+        }
+
+        do {
+            result = await this._get(partialURL, {
+                ...queryParams,
+                offset: offset,
+                limit: limit,
+            });
+            if (result.status < 400) {
+                if (allResults.totalResults == 0) {
+                    allResults = result.data;
+                } else {
+                    allResults.items = allResults.items.concat(
+                        result.data.items
+                    );
+                }
+                offset += limit;
+            } else {
+                return result;
+            }
+        } while (result.data.items.length == limit);
+        return allResults;
     }
 
     // Core: Activities Management
