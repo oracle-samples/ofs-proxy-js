@@ -19,6 +19,7 @@ import {
     OFSBulkUpdateRequest,
     OFSGetResourcesParams,
     OFSResourceResponse,
+    OFSResourceRoutesResponse,
 } from "./model";
 
 export * from "./model";
@@ -681,6 +682,21 @@ export class OFS {
             }
         } while (result.data.items.length == limit);
         return allResults;
+    }
+
+    async getResourceRoutes(
+        resourceId: string,
+        date: string,
+        activityFields?: string[]
+    ): Promise<OFSResourceRoutesResponse> {
+        const partialURL = `/rest/ofscCore/v1/resources/${resourceId}/routes/${date}`;
+        const queryParams: any = {};
+        
+        if (activityFields && activityFields.length > 0) {
+            queryParams.activityFields = activityFields.join(',');
+        }
+
+        return this._get(partialURL, queryParams);
     }
 
     // Core: Activities Management
