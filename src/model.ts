@@ -284,3 +284,37 @@ export class OFSResourceResponse extends OFSResponse {
         links: undefined,
     };
 }
+
+export interface OFSGetResourceRoutesParams {
+    resourceId: string;
+    date: string;
+    activityFields?: string[];
+}
+
+export interface OFSRouteActivity {
+    activityId: number;
+    latitude?: number;
+    longitude?: number;
+    status?: string;
+    [key: string]: any;
+}
+
+export interface OFSResourceRoutesData {
+    routeStartTime?: string;
+    totalResults: number;
+    limit: number;
+    offset: number;
+    items: OFSRouteActivity[];
+    links?: any[];
+    [key: string]: any;
+}
+
+export class OFSResourceRoutesResponse extends OFSResponse {
+    data: OFSResourceRoutesData = {
+        totalResults: 0,
+        limit: 100,
+        offset: 0,
+        items: [],
+    };
+}
+1
