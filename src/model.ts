@@ -317,4 +317,30 @@ export class OFSResourceRoutesResponse extends OFSResponse {
         items: [],
     };
 }
+
+export interface OFSGetLastKnownPositionsParams {
+    offset?: number;
+    resources?: string[];
+}
+
+export interface OFSLastKnownPosition {
+    resourceId: string;
+    time?: string;
+    lat?: number;
+    lng?: number;
+    errorMessage?: string;
+}
+
+export interface OFSLastKnownPositionsData {
+    totalResults: number;
+    items: OFSLastKnownPosition[];
+    hasMore?: boolean;
+}
+
+export class OFSLastKnownPositionsResponse extends OFSResponse {
+    data: OFSLastKnownPositionsData = {
+        totalResults: 0,
+        items: [],
+    };
+}
 1

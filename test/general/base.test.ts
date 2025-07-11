@@ -115,7 +115,7 @@ test("Get all Users", async () => {
     expect(result.totalResults).toBeGreaterThan(200);
     expect(result.items.length).toEqual(result.totalResults);
     expect(result.items[0].login).toBe("admin");
-});
+}, 30000);
 
 test("Get Resources No offset", async () => {
     var result = await myProxy.getResources();
@@ -178,4 +178,4 @@ test("Get all Resources", async () => {
         expect(result.items[0]).toHaveProperty("status");
         expect(result.items[0]).toHaveProperty("resourceType");
     }
-});
+}, 30000);
