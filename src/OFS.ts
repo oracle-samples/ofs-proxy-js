@@ -20,6 +20,8 @@ import {
     OFSGetResourcesParams,
     OFSResourceResponse,
     OFSResourceRoutesResponse,
+    OFSGetLastKnownPositionsParams,
+    OFSLastKnownPositionsResponse,
 } from "./model";
 
 export * from "./model";
@@ -697,6 +699,66 @@ export class OFS {
         }
 
         return this._get(partialURL, queryParams);
+    }
+
+    async getLastKnownPositions(
+        params: OFSGetLastKnownPositionsParams = {}
+    ): Promise<OFSLastKnownPositionsResponse> {
+        const partialURL = "/rest/ofscCore/v1/resources/custom-actions/lastKnownPositions";
+        const queryParams: any = {};
+        
+        if (params.offset !== undefined) {
+            queryParams.offset = params.offset;
+        }
+        if (params.resources && params.resources.length > 0) {
+            queryParams.resources = params.resources.join(',');
+        }
+
+        return this._get(partialURL, queryParams);
+    }
+
+    /**
+     * Retrieves all last known positions from the OFS API using pagination.
+     * @param params Optional parameters for filtering resources (excludes offset)
+     * @returns An object containing all last known positions.
+     */
+    async getAllLastKnownPositions(
+        params: Omit<OFSGetLastKnownPositionsParams, 'offset'> = {}
+    ) {
+        const partialURL = "/rest/ofscCore/v1/resources/custom-actions/lastKnownPositions";
+        var offset = 0;
+        var result: any = undefined;
+        var allResults: any = { totalResults: 0, items: [] };
+        
+        const queryParams: any = {};
+        if (params.resources && params.resources.length > 0) {
+            queryParams.resources = params.resources.join(',');
+        }
+
+        do {
+            result = await this._get(partialURL, {
+                ...queryParams,
+                offset: offset,
+            });
+            if (result.status < 400) {
+                if (allResults.totalResults == 0) {
+                    allResults = result.data;
+                } else {
+                    allResults.items = allResults.items.concat(
+                        result.data.items
+                    );
+                }
+                // Update the total count to reflect actual accumulated items
+                allResults.totalResults = allResults.items.length;
+                
+                // Increment offset by the number of items returned
+                offset += result.data.items.length;
+            } else {
+                return result;
+            }
+        } while (result.data.hasMore === true);
+        
+        return allResults;
     }
 
     // Core: Activities Management
