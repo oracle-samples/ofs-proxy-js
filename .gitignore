@@ -180,3 +180,4 @@ dist
 test/credentials*.json
 credentials*.json
 test/*.xml
+CLAUDE.md
