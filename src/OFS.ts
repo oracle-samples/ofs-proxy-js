@@ -90,7 +90,6 @@ export class OFS {
         var myHeaders = new Headers();
         myHeaders.append("Authorization", this.authorization);
         extraHeaders.forEach((value, key) => {
-            console.log(key, value);
             myHeaders.append(key, value);
         });
         var requestOptions = {
