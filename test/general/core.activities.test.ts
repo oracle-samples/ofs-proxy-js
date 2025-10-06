@@ -439,3 +439,44 @@ test("Get All Activities with incorrect data", async () => {
         "Date interval contains more than 31 days"
     );
 });
+
+test("Get Submitted Forms for Activity", async () => {
+    var aid = 3954799; // Activity with known submitted forms
+    var result = await myProxy.getSubmittedForms(aid);
+    expect(result.status).toBe(200);
+    expect(result.data).toHaveProperty('items');
+    expect(result.data).toHaveProperty('totalResults');
+    expect(result.data).toHaveProperty('hasMore');
+    expect(result.data).toHaveProperty('offset');
+    expect(result.data).toHaveProperty('limit');
+    expect(Array.isArray(result.data.items)).toBe(true);
+
+    // Verify structure of submitted forms if any exist
+    if (result.data.items.length > 0) {
+        const firstForm = result.data.items[0];
+        expect(firstForm).toHaveProperty('time');
+        expect(firstForm).toHaveProperty('user');
+        expect(firstForm).toHaveProperty('formIdentifier');
+        expect(firstForm.formIdentifier).toHaveProperty('formSubmitId');
+        expect(firstForm.formIdentifier).toHaveProperty('formLabel');
+        expect(firstForm).toHaveProperty('formDetails');
+    }
+});
+
+test("Get Submitted Forms with Pagination", async () => {
+    var aid = 3954799;
+    var result = await myProxy.getSubmittedForms(aid, { offset: 0, limit: 2 });
+    expect(result.status).toBe(200);
+    expect(result.data.limit).toBe(2);
+    expect(result.data.offset).toBe(0);
+    expect(Array.isArray(result.data.items)).toBe(true);
+});
+
+test("Get Submitted Forms for Non-existent Activity", async () => {
+    var aid = -1;
+    var result = await myProxy.getSubmittedForms(aid);
+    // API returns 200 with empty results for non-existent activities
+    expect(result.status).toBe(200);
+    expect(result.data.items).toEqual([]);
+    expect(result.data.totalResults).toBe(0);
+});

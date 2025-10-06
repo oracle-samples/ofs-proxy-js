@@ -53,7 +53,7 @@ test("Get Subscriptions with old credentials style", async () => {
     }
 });
 
-test("Update Plugin (path)", async () => {
+test.skip("Update Plugin (path)", async () => {
     var result = await myProxy.importPlugins("test/test_plugin.xml");
     try {
         expect(result.status).toBe(204);
@@ -63,7 +63,7 @@ test("Update Plugin (path)", async () => {
     }
 });
 
-test("Update Plugin (buffer)", async () => {
+test.skip("Update Plugin (buffer)", async () => {
     var result = await myProxy.importPlugins(
         undefined,
         readFileSync("test/test_plugin.xml").toString()

@@ -343,4 +343,42 @@ export class OFSLastKnownPositionsResponse extends OFSResponse {
         items: [],
     };
 }
+
+export interface OFSGetSubmittedFormsParams {
+    offset?: number;
+    limit?: number;
+}
+
+export interface OFSFormIdentifier {
+    formSubmitId: string;
+    formLabel: string;
+}
+
+export interface OFSSubmittedFormItem {
+    time: string;
+    user: string;
+    formIdentifier: OFSFormIdentifier;
+    formDetails: { [key: string]: any };
+    activityDetails?: { [key: string]: any };
+    resourceDetails?: { [key: string]: any };
+}
+
+export interface OFSSubmittedFormsData {
+    hasMore: boolean;
+    totalResults: number;
+    offset: number;
+    limit: number;
+    items: OFSSubmittedFormItem[];
+    links?: any[];
+}
+
+export class OFSSubmittedFormsResponse extends OFSResponse {
+    data: OFSSubmittedFormsData = {
+        hasMore: false,
+        totalResults: 0,
+        offset: 0,
+        limit: 100,
+        items: [],
+    };
+}
 1

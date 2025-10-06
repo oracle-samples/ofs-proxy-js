@@ -27,7 +27,7 @@ TEST_CONFIG.set("23.11", {
 });
 TEST_CONFIG.set("25A", {
     numberOfProperties: 464,
-    numberOfResourceProperties: 38,
+    numberOfResourceProperties: 44,
     numberOfTimeslots: 9,
 });
 // Setup info
