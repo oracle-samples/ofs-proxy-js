@@ -439,3 +439,89 @@ test("Get All Activities with incorrect data", async () => {
         "Date interval contains more than 31 days"
     );
 });
+
+test("Get Submitted Forms for Activity", async () => {
+    var aid = 3954799; // Activity with known submitted forms
+    var result = await myProxy.getSubmittedForms(aid);
+    expect(result.status).toBe(200);
+    expect(result.data).toHaveProperty('items');
+    expect(result.data).toHaveProperty('totalResults');
+    expect(result.data).toHaveProperty('hasMore');
+    expect(result.data).toHaveProperty('offset');
+    expect(result.data).toHaveProperty('limit');
+    expect(Array.isArray(result.data.items)).toBe(true);
+
+    // Verify structure of submitted forms if any exist
+    if (result.data.items.length > 0) {
+        const firstForm = result.data.items[0];
+        expect(firstForm).toHaveProperty('time');
+        expect(firstForm).toHaveProperty('user');
+        expect(firstForm).toHaveProperty('formIdentifier');
+        expect(firstForm.formIdentifier).toHaveProperty('formSubmitId');
+        expect(firstForm.formIdentifier).toHaveProperty('formLabel');
+        expect(firstForm).toHaveProperty('formDetails');
+    }
+});
+
+test("Get Submitted Forms with Pagination", async () => {
+    var aid = 3954799;
+    var result = await myProxy.getSubmittedForms(aid, { offset: 0, limit: 2 });
+    expect(result.status).toBe(200);
+    expect(result.data.limit).toBe(2);
+    expect(result.data.offset).toBe(0);
+    expect(Array.isArray(result.data.items)).toBe(true);
+});
+
+test("Get Submitted Forms for Non-existent Activity", async () => {
+    var aid = -1;
+    var result = await myProxy.getSubmittedForms(aid);
+    // API returns 200 with empty results for non-existent activities
+    expect(result.status).toBe(200);
+    expect(result.data.items).toEqual([]);
+    expect(result.data.totalResults).toBe(0);
+});
+
+test("Get Submitted Forms with Real Data - Activity 3954799", async () => {
+    var aid = 3954799;
+    var result = await myProxy.getSubmittedForms(aid);
+
+    // Log the complete result for verification
+    console.log(`\n========== Submitted Forms for Activity ${aid} ==========`);
+    console.log(`Status: ${result.status}`);
+    console.log(`Total Results: ${result.data.totalResults}`);
+    console.log(`Has More: ${result.data.hasMore}`);
+    console.log(`Offset: ${result.data.offset}`);
+    console.log(`Limit: ${result.data.limit}`);
+    console.log(`Number of items: ${result.data.items.length}`);
+    console.log(`Full Response:`, JSON.stringify(result.data, null, 2));
+    console.log('==========================================================\n');
+
+    // Verify successful response
+    expect(result.status).toBe(200);
+    expect(result.data).toHaveProperty('totalResults');
+    expect(result.data).toHaveProperty('items');
+    expect(Array.isArray(result.data.items)).toBe(true);
+
+    // If we have data, verify structure
+    if (result.data.totalResults > 0 && result.data.items.length > 0) {
+        const firstForm = result.data.items[0];
+        expect(firstForm).toHaveProperty('time');
+        expect(firstForm).toHaveProperty('user');
+        expect(typeof firstForm.time).toBe('string');
+        expect(typeof firstForm.user).toBe('string');
+
+        // Verify formIdentifier structure
+        expect(firstForm.formIdentifier).toHaveProperty('formSubmitId');
+        expect(firstForm.formIdentifier).toHaveProperty('formLabel');
+        expect(typeof firstForm.formIdentifier.formSubmitId).toBe('string');
+        expect(typeof firstForm.formIdentifier.formLabel).toBe('string');
+
+        // Verify formDetails is an object
+        expect(firstForm.formDetails).toBeDefined();
+        expect(typeof firstForm.formDetails).toBe('object');
+
+        console.log(`✓ Verified form structure for: ${firstForm.formIdentifier.formLabel}`);
+    } else {
+        console.log('⚠ No submitted forms found for this activity');
+    }
+});

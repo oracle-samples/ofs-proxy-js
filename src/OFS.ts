@@ -22,6 +22,8 @@ import {
     OFSResourceRoutesResponse,
     OFSGetLastKnownPositionsParams,
     OFSLastKnownPositionsResponse,
+    OFSGetSubmittedFormsParams,
+    OFSSubmittedFormsResponse,
 } from "./model";
 
 export * from "./model";
@@ -88,7 +90,6 @@ export class OFS {
         var myHeaders = new Headers();
         myHeaders.append("Authorization", this.authorization);
         extraHeaders.forEach((value, key) => {
-            console.log(key, value);
             myHeaders.append(key, value);
         });
         var requestOptions = {
@@ -561,6 +562,25 @@ export class OFS {
     ): Promise<OFSResponse> {
         const partialURL = `/rest/ofscCore/v1/activities/${aid}/${propertyLabel}`;
         return this._put(partialURL, blob, contentType, fileName);
+    }
+
+    async getSubmittedForms(
+        activityId: number,
+        params: OFSGetSubmittedFormsParams = {}
+    ): Promise<OFSSubmittedFormsResponse> {
+        const partialURL = `/rest/ofscCore/v1/activities/${activityId}/submittedForms`;
+        const queryParams: any = {
+            scope: params.scope !== undefined ? params.scope : 'activity'
+        };
+
+        if (params.offset !== undefined) {
+            queryParams.offset = params.offset;
+        }
+        if (params.limit !== undefined) {
+            queryParams.limit = params.limit;
+        }
+
+        return this._get(partialURL, queryParams);
     }
 
     // Core: User Management
