@@ -176,3 +176,351 @@ test("Get Resource Routes response structure validation", async () => {
         }
     }
 });
+
+// Tests for getLastKnownPositions method
+test("Get Last Known Positions with no parameters", async () => {
+    var result = await myProxy.getLastKnownPositions();
+    
+    // Test the method call itself works (doesn't throw)
+    expect(result).toBeDefined();
+    expect(result.status).toBeDefined();
+    expect(result.data).toBeDefined();
+    
+    // If successful, check the response structure
+    if (result.status === 200 && result.data) {
+        expect(result.data.totalResults).toBeDefined();
+        expect(typeof result.data.totalResults).toBe('number');
+        expect(Array.isArray(result.data.items)).toBe(true);
+        
+        // If there are items, validate their structure
+        if (result.data.items.length > 0) {
+            var position = result.data.items[0];
+            expect(position.resourceId).toBeDefined();
+            expect(typeof position.resourceId).toBe('string');
+            // time, lat, lng, errorMessage are optional fields
+        }
+    }
+});
+
+test("Get Last Known Positions with offset parameter", async () => {
+    var result = await myProxy.getLastKnownPositions({ offset: 10 });
+    
+    expect(result).toBeDefined();
+    expect(result.status).toBeDefined();
+    expect(result.data).toBeDefined();
+    
+    if (result.status === 200 && result.data) {
+        expect(Array.isArray(result.data.items)).toBe(true);
+        expect(result.data.totalResults).toBeDefined();
+        expect(typeof result.data.totalResults).toBe('number');
+    }
+});
+
+test("Get Last Known Positions with specific resources", async () => {
+    var resources = ["100000471803411"];
+    var result = await myProxy.getLastKnownPositions({ resources });
+    
+    expect(result).toBeDefined();
+    expect(result.status).toBeDefined();
+    expect(result.data).toBeDefined();
+    
+    if (result.status === 200 && result.data) {
+        expect(Array.isArray(result.data.items)).toBe(true);
+        
+        // If there are items, they should be for the requested resources
+        if (result.data.items.length > 0) {
+            var position = result.data.items[0];
+            expect(position.resourceId).toBeDefined();
+            expect(typeof position.resourceId).toBe('string');
+        }
+    }
+});
+
+test("Get Last Known Positions with multiple resources", async () => {
+    var resources = ["100000471803411", "100000471803412"];
+    var result = await myProxy.getLastKnownPositions({ resources });
+    
+    expect(result).toBeDefined();
+    expect(result.status).toBeDefined();
+    expect(result.data).toBeDefined();
+    
+    if (result.status === 200 && result.data) {
+        expect(Array.isArray(result.data.items)).toBe(true);
+        
+        // Check structure of response
+        if (result.data.items.length > 0) {
+            var position = result.data.items[0];
+            expect(position.resourceId).toBeDefined();
+            expect(typeof position.resourceId).toBe('string');
+            
+            // Check optional fields exist if present
+            if (position.time) {
+                expect(typeof position.time).toBe('string');
+            }
+            if (position.lat) {
+                expect(typeof position.lat).toBe('number');
+            }
+            if (position.lng) {
+                expect(typeof position.lng).toBe('number');
+            }
+            if (position.errorMessage) {
+                expect(typeof position.errorMessage).toBe('string');
+            }
+        }
+    }
+});
+
+test("Get Last Known Positions with offset and resources", async () => {
+    var resources = ["100000471803411"];
+    var result = await myProxy.getLastKnownPositions({ 
+        offset: 5,
+        resources 
+    });
+    
+    expect(result).toBeDefined();
+    expect(result.status).toBeDefined();
+    expect(result.data).toBeDefined();
+    
+    if (result.status === 200 && result.data) {
+        expect(Array.isArray(result.data.items)).toBe(true);
+        expect(result.data.totalResults).toBeDefined();
+        expect(typeof result.data.totalResults).toBe('number');
+    }
+});
+
+test("Get Last Known Positions with invalid resource ID", async () => {
+    var resources = ["INVALID_RESOURCE_ID"];
+    var result = await myProxy.getLastKnownPositions({ resources });
+    
+    expect(result).toBeDefined();
+    expect(result.status).toBeDefined();
+    expect(result.data).toBeDefined();
+    
+    // Should return 200 with items that might contain error messages
+    if (result.status === 200 && result.data) {
+        expect(Array.isArray(result.data.items)).toBe(true);
+        
+        // If there are items, they might contain error messages
+        if (result.data.items.length > 0) {
+            var position = result.data.items[0];
+            expect(position.resourceId).toBe("INVALID_RESOURCE_ID");
+            // errorMessage might be present for invalid resources
+        }
+    }
+});
+
+test("Get Last Known Positions response structure validation", async () => {
+    var result = await myProxy.getLastKnownPositions();
+    
+    // Basic validation - method should return a proper response object
+    expect(result).toBeDefined();
+    expect(result.status).toBeDefined();
+    expect(typeof result.status).toBe('number');
+    expect(result.data).toBeDefined();
+    
+    if (result.status === 200) {
+        // Validate response structure if successful
+        expect(result.data.totalResults).toBeDefined();
+        expect(typeof result.data.totalResults).toBe('number');
+        expect(Array.isArray(result.data.items)).toBe(true);
+        
+        // Check if hasMore exists in response (optional field)
+        if (result.data.hasMore !== undefined) {
+            expect(typeof result.data.hasMore).toBe('boolean');
+        }
+        
+        // If there are positions, validate their structure
+        if (result.data.items.length > 0) {
+            var position = result.data.items[0];
+            expect(position.resourceId).toBeDefined();
+            expect(typeof position.resourceId).toBe('string');
+            
+            // Optional fields validation
+            if (position.time !== undefined) {
+                expect(typeof position.time).toBe('string');
+            }
+            if (position.lat !== undefined) {
+                expect(typeof position.lat).toBe('number');
+            }
+            if (position.lng !== undefined) {
+                expect(typeof position.lng).toBe('number');
+            }
+            if (position.errorMessage !== undefined) {
+                expect(typeof position.errorMessage).toBe('string');
+            }
+        }
+    }
+});
+
+// Tests for getAllLastKnownPositions method
+test("Get All Last Known Positions with no parameters", async () => {
+    var result = await myProxy.getAllLastKnownPositions();
+    
+    // Test the method call itself works (doesn't throw)
+    expect(result).toBeDefined();
+    expect(result.totalResults).toBeDefined();
+    expect(typeof result.totalResults).toBe('number');
+    expect(Array.isArray(result.items)).toBe(true);
+    
+    // Should have accumulated all items
+    expect(result.totalResults).toBe(result.items.length);
+    
+    // If there are items, validate their structure
+    if (result.items.length > 0) {
+        var position = result.items[0];
+        expect(position.resourceId).toBeDefined();
+        expect(typeof position.resourceId).toBe('string');
+        
+        // Optional fields validation
+        if (position.time !== undefined) {
+            expect(typeof position.time).toBe('string');
+        }
+        if (position.lat !== undefined) {
+            expect(typeof position.lat).toBe('number');
+        }
+        if (position.lng !== undefined) {
+            expect(typeof position.lng).toBe('number');
+        }
+        if (position.errorMessage !== undefined) {
+            expect(typeof position.errorMessage).toBe('string');
+        }
+    }
+});
+
+test("Get All Last Known Positions with specific resources", async () => {
+    var resources = ["100000471803411", "33035"];
+    var result = await myProxy.getAllLastKnownPositions({ resources });
+    
+    expect(result).toBeDefined();
+    expect(result.totalResults).toBeDefined();
+    expect(typeof result.totalResults).toBe('number');
+    expect(Array.isArray(result.items)).toBe(true);
+    
+    // Should have accumulated all items
+    expect(result.totalResults).toBe(result.items.length);
+    
+    // If there are items, they should be for the requested resources
+    if (result.items.length > 0) {
+        var position = result.items[0];
+        expect(position.resourceId).toBeDefined();
+        expect(typeof position.resourceId).toBe('string');
+        
+        // Check that returned resource IDs are in the requested list
+        expect(resources).toContain(position.resourceId);
+    }
+});
+
+test("Get All Last Known Positions with multiple resources", async () => {
+    var resources = ["100000471803411", "33035", "44026", "55030"];
+    var result = await myProxy.getAllLastKnownPositions({ resources });
+    
+    expect(result).toBeDefined();
+    expect(result.totalResults).toBeDefined();
+    expect(typeof result.totalResults).toBe('number');
+    expect(Array.isArray(result.items)).toBe(true);
+    
+    // Should have accumulated all items
+    expect(result.totalResults).toBe(result.items.length);
+    
+    // Verify structure of response
+    if (result.items.length > 0) {
+        var position = result.items[0];
+        expect(position.resourceId).toBeDefined();
+        expect(typeof position.resourceId).toBe('string');
+        
+        // Check that returned resource IDs are in the requested list
+        expect(resources).toContain(position.resourceId);
+    }
+});
+
+test("Get All Last Known Positions with single resource", async () => {
+    var resources = ["33035"]; // This resource has a valid position
+    var result = await myProxy.getAllLastKnownPositions({ resources });
+    
+    expect(result).toBeDefined();
+    expect(result.totalResults).toBeDefined();
+    expect(typeof result.totalResults).toBe('number');
+    expect(Array.isArray(result.items)).toBe(true);
+    
+    // Should have accumulated all items
+    expect(result.totalResults).toBe(result.items.length);
+    
+    // Should have exactly one item for the single resource
+    if (result.items.length > 0) {
+        expect(result.items.length).toBe(1);
+        var position = result.items[0];
+        expect(position.resourceId).toBe("33035");
+    }
+});
+
+test("Get All Last Known Positions with invalid resource", async () => {
+    var resources = ["INVALID_RESOURCE_ID"];
+    var result = await myProxy.getAllLastKnownPositions({ resources });
+    
+    expect(result).toBeDefined();
+    expect(result.totalResults).toBeDefined();
+    expect(typeof result.totalResults).toBe('number');
+    expect(Array.isArray(result.items)).toBe(true);
+    
+    // Should have accumulated all items
+    expect(result.totalResults).toBe(result.items.length);
+    
+    // Should have one item with error message
+    if (result.items.length > 0) {
+        expect(result.items.length).toBe(1);
+        var position = result.items[0];
+        expect(position.resourceId).toBe("INVALID_RESOURCE_ID");
+        expect(position.errorMessage).toBeDefined();
+        expect(typeof position.errorMessage).toBe('string');
+    }
+});
+
+test("Get All Last Known Positions response structure validation", async () => {
+    var result = await myProxy.getAllLastKnownPositions();
+    
+    // Basic validation - method should return a proper response object
+    expect(result).toBeDefined();
+    expect(result.totalResults).toBeDefined();
+    expect(typeof result.totalResults).toBe('number');
+    expect(Array.isArray(result.items)).toBe(true);
+    
+    // Should have accumulated all items - totalResults should equal items length
+    expect(result.totalResults).toBe(result.items.length);
+    
+    // If there are positions, validate their structure
+    if (result.items.length > 0) {
+        var position = result.items[0];
+        expect(position.resourceId).toBeDefined();
+        expect(typeof position.resourceId).toBe('string');
+        
+        // Optional fields validation
+        if (position.time !== undefined) {
+            expect(typeof position.time).toBe('string');
+        }
+        if (position.lat !== undefined) {
+            expect(typeof position.lat).toBe('number');
+        }
+        if (position.lng !== undefined) {
+            expect(typeof position.lng).toBe('number');
+        }
+        if (position.errorMessage !== undefined) {
+            expect(typeof position.errorMessage).toBe('string');
+        }
+    }
+});
+
+test("Get All Last Known Positions should handle pagination", async () => {
+    // This test verifies that the method correctly handles the hasMore flag
+    var result = await myProxy.getAllLastKnownPositions();
+    
+    expect(result).toBeDefined();
+    expect(result.totalResults).toBeDefined();
+    expect(typeof result.totalResults).toBe('number');
+    expect(Array.isArray(result.items)).toBe(true);
+    
+    // The method should have accumulated all items across all pages
+    expect(result.totalResults).toBe(result.items.length);
+    
+    // No hasMore field should be present in the final result
+    expect(result.hasMore).toBeUndefined();
+});
