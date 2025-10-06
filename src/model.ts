@@ -347,6 +347,7 @@ export class OFSLastKnownPositionsResponse extends OFSResponse {
 export interface OFSGetSubmittedFormsParams {
     offset?: number;
     limit?: number;
+    scope?: string;
 }
 
 export interface OFSFormIdentifier {

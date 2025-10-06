@@ -480,3 +480,48 @@ test("Get Submitted Forms for Non-existent Activity", async () => {
     expect(result.data.items).toEqual([]);
     expect(result.data.totalResults).toBe(0);
 });
+
+test("Get Submitted Forms with Real Data - Activity 3954799", async () => {
+    var aid = 3954799;
+    var result = await myProxy.getSubmittedForms(aid);
+
+    // Log the complete result for verification
+    console.log(`\n========== Submitted Forms for Activity ${aid} ==========`);
+    console.log(`Status: ${result.status}`);
+    console.log(`Total Results: ${result.data.totalResults}`);
+    console.log(`Has More: ${result.data.hasMore}`);
+    console.log(`Offset: ${result.data.offset}`);
+    console.log(`Limit: ${result.data.limit}`);
+    console.log(`Number of items: ${result.data.items.length}`);
+    console.log(`Full Response:`, JSON.stringify(result.data, null, 2));
+    console.log('==========================================================\n');
+
+    // Verify successful response
+    expect(result.status).toBe(200);
+    expect(result.data).toHaveProperty('totalResults');
+    expect(result.data).toHaveProperty('items');
+    expect(Array.isArray(result.data.items)).toBe(true);
+
+    // If we have data, verify structure
+    if (result.data.totalResults > 0 && result.data.items.length > 0) {
+        const firstForm = result.data.items[0];
+        expect(firstForm).toHaveProperty('time');
+        expect(firstForm).toHaveProperty('user');
+        expect(typeof firstForm.time).toBe('string');
+        expect(typeof firstForm.user).toBe('string');
+
+        // Verify formIdentifier structure
+        expect(firstForm.formIdentifier).toHaveProperty('formSubmitId');
+        expect(firstForm.formIdentifier).toHaveProperty('formLabel');
+        expect(typeof firstForm.formIdentifier.formSubmitId).toBe('string');
+        expect(typeof firstForm.formIdentifier.formLabel).toBe('string');
+
+        // Verify formDetails is an object
+        expect(firstForm.formDetails).toBeDefined();
+        expect(typeof firstForm.formDetails).toBe('object');
+
+        console.log(`✓ Verified form structure for: ${firstForm.formIdentifier.formLabel}`);
+    } else {
+        console.log('⚠ No submitted forms found for this activity');
+    }
+});

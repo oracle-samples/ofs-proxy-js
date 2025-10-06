@@ -569,7 +569,9 @@ export class OFS {
         params: OFSGetSubmittedFormsParams = {}
     ): Promise<OFSSubmittedFormsResponse> {
         const partialURL = `/rest/ofscCore/v1/activities/${activityId}/submittedForms`;
-        const queryParams: any = {};
+        const queryParams: any = {
+            scope: params.scope !== undefined ? params.scope : 'activity'
+        };
 
         if (params.offset !== undefined) {
             queryParams.offset = params.offset;
