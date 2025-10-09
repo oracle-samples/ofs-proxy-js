@@ -664,14 +664,14 @@ export class OFS {
      *
      * This method automatically handles pagination and can optionally retry on connection timeout errors.
      *
-     * @param params Optional parameters for filtering resources (excludes limit and offset)
+     * @param params Optional parameters for filtering resources (excludes offset)
      * @param params.canBeTeamHolder Filter by resources that can be team holders
      * @param params.canParticipateInTeam Filter by resources that can participate in teams
      * @param params.expand Array of fields to expand in the response
      * @param params.fields Array of specific fields to return
+     * @param params.limit Number of records to fetch per request (default: 100)
      *
-     * @param options Optional configuration for batch size and retry behavior
-     * @param options.batchSize Number of records to fetch per request (default: 100)
+     * @param options Optional configuration for retry behavior
      * @param options.enableRetry Whether to retry on connection timeout errors (default: false)
      * @param options.retryWaitTime Wait time in seconds between retry attempts (default: 30)
      * @param options.maxRetries Maximum number of retry attempts (default: 3)
@@ -684,12 +684,11 @@ export class OFS {
      *
      * @example
      * // With custom batch size
-     * const allResources = await ofs.getAllResources({}, { batchSize: 200 });
+     * const allResources = await ofs.getAllResources({ limit: 200 });
      *
      * @example
      * // With retry enabled for timeout handling
-     * const allResources = await ofs.getAllResources({}, {
-     *   batchSize: 50,
+     * const allResources = await ofs.getAllResources({ limit: 50 }, {
      *   enableRetry: true,
      *   retryWaitTime: 60,
      *   maxRetries: 5
@@ -703,12 +702,12 @@ export class OFS {
      * });
      */
     async getAllResources(
-        params: Omit<OFSGetResourcesParams, 'limit' | 'offset'> = {},
+        params: Omit<OFSGetResourcesParams, 'offset'> = {},
         options: OFSGetAllResourcesOptions = {}
     ) {
         const partialURL = "/rest/ofscCore/v1/resources";
         var offset = 0;
-        var limit = options.batchSize ?? 100;
+        var limit = params.limit ?? 100;
         var result: any = undefined;
         var allResults: any = { totalResults: 0, items: [] };
 

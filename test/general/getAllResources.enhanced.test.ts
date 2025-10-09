@@ -12,7 +12,7 @@ describe('getAllResources Enhanced Features', () => {
         });
     });
 
-    test('should accept batch size option', async () => {
+    test('should accept custom limit for batch size', async () => {
         // Mock the _get method to avoid actual API calls
         const mockGet = jest.spyOn(mockOFS as any, '_get');
         mockGet.mockResolvedValue({
@@ -20,7 +20,7 @@ describe('getAllResources Enhanced Features', () => {
             data: { totalResults: 50, items: new Array(50).fill({ resourceId: '1', name: 'Test' }) }
         });
 
-        await mockOFS.getAllResources({}, { batchSize: 50 });
+        await mockOFS.getAllResources({ limit: 50 });
 
         // Verify that _get was called with the custom batch size
         expect(mockGet).toHaveBeenCalledWith(
@@ -100,17 +100,18 @@ describe('getAllResources Enhanced Features', () => {
         expect(result).toBeDefined();
     });
 
-    test('should combine filters with custom batch size', async () => {
+    test('should combine filters with custom limit', async () => {
         const mockGet = jest.spyOn(mockOFS as any, '_get');
         mockGet.mockResolvedValue({
             status: 200,
             data: { totalResults: 25, items: new Array(25).fill({ resourceId: '1', name: 'Test' }) }
         });
 
-        await mockOFS.getAllResources(
-            { canBeTeamHolder: true, fields: ['resourceId', 'name'] },
-            { batchSize: 25 }
-        );
+        await mockOFS.getAllResources({
+            canBeTeamHolder: true,
+            fields: ['resourceId', 'name'],
+            limit: 25
+        });
 
         expect(mockGet).toHaveBeenCalledWith(
             expect.any(String),

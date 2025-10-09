@@ -257,7 +257,6 @@ export interface OFSGetResourcesParams {
 }
 
 export interface OFSGetAllResourcesOptions {
-    batchSize?: number;
     enableRetry?: boolean;
     retryWaitTime?: number;
     maxRetries?: number;
