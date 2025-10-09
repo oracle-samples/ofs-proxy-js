@@ -256,6 +256,13 @@ export interface OFSGetResourcesParams {
     offset?: number;
 }
 
+export interface OFSGetAllResourcesOptions {
+    batchSize?: number;
+    enableRetry?: boolean;
+    retryWaitTime?: number;
+    maxRetries?: number;
+}
+
 export interface OFSResource {
     resourceId: string;
     name: string;

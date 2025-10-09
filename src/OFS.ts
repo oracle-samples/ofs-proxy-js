@@ -18,6 +18,7 @@ import {
     OFSSearchForActivitiesParams,
     OFSBulkUpdateRequest,
     OFSGetResourcesParams,
+    OFSGetAllResourcesOptions,
     OFSResourceResponse,
     OFSResourceRoutesResponse,
     OFSGetLastKnownPositionsParams,
@@ -659,17 +660,62 @@ export class OFS {
     }
 
     /**
-     * Retrieves all resources from the OFS API.
-     * @param params Optional parameters for filtering resources
-     * @returns An object containing all resources.
+     * Retrieves all resources from the OFS API with pagination.
+     *
+     * This method automatically handles pagination and can optionally retry on connection timeout errors.
+     *
+     * @param params Optional parameters for filtering resources (excludes limit and offset)
+     * @param params.canBeTeamHolder Filter by resources that can be team holders
+     * @param params.canParticipateInTeam Filter by resources that can participate in teams
+     * @param params.expand Array of fields to expand in the response
+     * @param params.fields Array of specific fields to return
+     *
+     * @param options Optional configuration for batch size and retry behavior
+     * @param options.batchSize Number of records to fetch per request (default: 100)
+     * @param options.enableRetry Whether to retry on connection timeout errors (default: false)
+     * @param options.retryWaitTime Wait time in seconds between retry attempts (default: 30)
+     * @param options.maxRetries Maximum number of retry attempts (default: 3)
+     *
+     * @returns An object containing all resources with totalResults and items array
+     *
+     * @example
+     * // Basic usage with default settings
+     * const allResources = await ofs.getAllResources();
+     *
+     * @example
+     * // With custom batch size
+     * const allResources = await ofs.getAllResources({}, { batchSize: 200 });
+     *
+     * @example
+     * // With retry enabled for timeout handling
+     * const allResources = await ofs.getAllResources({}, {
+     *   batchSize: 50,
+     *   enableRetry: true,
+     *   retryWaitTime: 60,
+     *   maxRetries: 5
+     * });
+     *
+     * @example
+     * // With filters
+     * const teamHolders = await ofs.getAllResources({
+     *   canBeTeamHolder: true,
+     *   fields: ['resourceId', 'name', 'status']
+     * });
      */
-    async getAllResources(params: Omit<OFSGetResourcesParams, 'limit' | 'offset'> = {}) {
+    async getAllResources(
+        params: Omit<OFSGetResourcesParams, 'limit' | 'offset'> = {},
+        options: OFSGetAllResourcesOptions = {}
+    ) {
         const partialURL = "/rest/ofscCore/v1/resources";
         var offset = 0;
-        var limit = 100;
+        var limit = options.batchSize ?? 100;
         var result: any = undefined;
         var allResults: any = { totalResults: 0, items: [] };
-        
+
+        const enableRetry = options.enableRetry ?? false;
+        const retryWaitTime = (options.retryWaitTime ?? 30) * 1000; // Convert to milliseconds
+        const maxRetries = options.maxRetries ?? 3;
+
         const queryParams: any = {};
         if (params.canBeTeamHolder !== undefined) {
             queryParams.canBeTeamHolder = params.canBeTeamHolder;
@@ -685,24 +731,53 @@ export class OFS {
         }
 
         do {
-            result = await this._get(partialURL, {
-                ...queryParams,
-                offset: offset,
-                limit: limit,
-            });
-            if (result.status < 400) {
-                if (allResults.totalResults == 0) {
-                    allResults = result.data;
-                } else {
-                    allResults.items = allResults.items.concat(
-                        result.data.items
-                    );
+            let retryCount = 0;
+            let success = false;
+
+            while (!success && retryCount <= maxRetries) {
+                try {
+                    result = await this._get(partialURL, {
+                        ...queryParams,
+                        offset: offset,
+                        limit: limit,
+                    });
+
+                    if (result.status < 400) {
+                        if (allResults.totalResults == 0) {
+                            allResults = result.data;
+                        } else {
+                            allResults.items = allResults.items.concat(
+                                result.data.items
+                            );
+                        }
+                        offset += limit;
+                        success = true;
+                    } else if (result.status === -1 && enableRetry && retryCount < maxRetries) {
+                        // Status -1 indicates a network error (timeout/connection error)
+                        retryCount++;
+                        console.log(`Connection timeout on attempt ${retryCount}. Retrying in ${retryWaitTime/1000} seconds...`);
+                        await new Promise(resolve => setTimeout(resolve, retryWaitTime));
+                    } else {
+                        // Non-retriable error or retry disabled
+                        return result;
+                    }
+                } catch (error) {
+                    if (enableRetry && retryCount < maxRetries) {
+                        retryCount++;
+                        console.log(`Error on attempt ${retryCount}: ${error}. Retrying in ${retryWaitTime/1000} seconds...`);
+                        await new Promise(resolve => setTimeout(resolve, retryWaitTime));
+                    } else {
+                        throw error;
+                    }
                 }
-                offset += limit;
-            } else {
+            }
+
+            if (!success) {
+                // Max retries exceeded
                 return result;
             }
-        } while (result.data.items.length == limit);
+        } while (result.data && result.data.items && result.data.items.length == limit);
+
         return allResults;
     }
 
