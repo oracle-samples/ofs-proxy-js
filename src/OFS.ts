@@ -25,6 +25,7 @@ import {
     OFSGetSubmittedFormsParams,
     OFSSubmittedFormsResponse,
     OFSActivityLinkTypeResponse,
+    OFSLinkTemplatesResponse,
 } from "./model";
 
 export * from "./model";
@@ -897,6 +898,12 @@ export class OFS {
     ): Promise<OFSPropertyListResponse> {
         const partialURL = "/rest/ofscMetadata/v1/properties";
         return this._get(partialURL, params);
+    }
+
+    //Meta: Link Templates
+    async getLinkTemplates(): Promise<OFSLinkTemplatesResponse> {
+        const partialURL = "/rest/ofscMetadata/v1/linkTemplates";
+        return this._get(partialURL) as Promise<OFSLinkTemplatesResponse>;
     }
 
     async getPropertyDetails(pid: string): Promise<OFSPropertyDetailsResponse> {

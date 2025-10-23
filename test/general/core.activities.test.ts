@@ -541,8 +541,18 @@ test("Get Linked Activities for Activity", async () => {
 
 test("Get Activity Link Type", async () => {
     var aid = 4225599; // sample activity id
-    var linkedActivityId = 4225600; // sample linked activity id
-    var linkType = "requires"; // example link type
+    // Get link templates to use a valid linkType
+    var linkTemplatesResult = await myProxy.getLinkTemplates();
+    expect(linkTemplatesResult.status).toBe(200);
+    expect(linkTemplatesResult.data.items.length).toBeGreaterThan(0);
+    var linkType = linkTemplatesResult.data.items[0].linkType;
+    // Get linked activities to use a valid linkedActivityId
+    var linkedActivitiesResult = await myProxy.getLinkedActivities(aid);
+    expect(linkedActivitiesResult.status).toBeGreaterThanOrEqual(200);
+    expect(linkedActivitiesResult.status).toBeLessThan(400);
+    var linkedActivityId = Array.isArray(linkedActivitiesResult.data.items) && linkedActivitiesResult.data.items.length > 0
+        ? linkedActivitiesResult.data.items[0].activityId
+        : 4225600; // fallback to sample id if none found
     var result = await myProxy.getActivityLinkType(aid, linkedActivityId, linkType);
     // API may return 200 with link type info
     expect(result.status).toBeGreaterThanOrEqual(200);

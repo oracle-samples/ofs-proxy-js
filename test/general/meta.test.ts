@@ -302,3 +302,14 @@ test("Get a list of configured timeslots", async () => {
         throw error;
     }
 });
+
+test("Get Link Templates", async () => {
+    var result = await myProxy.getLinkTemplates();
+    expect(result.status).toBe(200);
+    expect(result.data.items.length).toBeGreaterThan(0);
+    expect(Array.isArray(result.data.items)).toBe(true);
+    // Optionally log the first template for inspection
+    if (result.data.items.length > 0) {
+        console.log("First Link Template:", result.data.items[0]);
+    }
+});
