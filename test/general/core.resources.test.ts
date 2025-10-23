@@ -11,9 +11,10 @@ var myProxy: OFS;
 
 // Setup info
 beforeAll(() => {
-    myProxy = new OFS(myCredentials);
-    if ("instance" in myCredentials) {
-        expect(myProxy.instance).toBe(myCredentials.instance);
+    const credentials = getTestCredentials();
+    myProxy = new OFS(credentials);
+    if ("instance" in credentials) {
+        expect(myProxy.instance).toBe(credentials.instance);
     } else {
         expect(myProxy.baseURL).toBe(myProxy.baseURL);
     }
