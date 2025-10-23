@@ -6,7 +6,7 @@
 import { createReadStream, readFileSync } from "fs";
 import { OFSCredentials } from "../../src/model";
 import { OFS } from "../../src/OFS";
-import myCredentials from "../credentials_test_app.json";
+import { getTestCredentials } from "../test_credentials";
 import myOldCredentials from "../credentials_test.json";
 import { th } from "@faker-js/faker";
 
@@ -14,9 +14,10 @@ var myProxy: OFS;
 
 // Setup info
 beforeAll(() => {
-    myProxy = new OFS(myCredentials);
-    if ("instance" in myCredentials) {
-        expect(myProxy.instance).toBe(myCredentials.instance);
+    const credentials = getTestCredentials();
+    myProxy = new OFS(credentials);
+    if ("instance" in credentials) {
+        expect(myProxy.instance).toBe(credentials.instance);
     } else {
         expect(myProxy.baseURL).toBe(myProxy.baseURL);
     }
