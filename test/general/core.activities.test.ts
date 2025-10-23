@@ -328,11 +328,16 @@ test("Get Activities", async () => {
 });
 
 test("Search for Activities", async () => {
-    var currentDate = new Date().toISOString().split("T")[0];
+    // Use a date range from last week to today
+    const today = new Date();
+    const lastWeek = new Date(today);
+    lastWeek.setDate(today.getDate() - 7);
+    const dateFrom = lastWeek.toISOString().split("T")[0];
+    const dateTo = today.toISOString().split("T")[0];
     var result = await myProxy.searchForActivities(
         {
-            dateFrom: currentDate,
-            dateTo: currentDate,
+            dateFrom,
+            dateTo,
             searchForValue: "137165209",
             searchInField: "apptNumber",
         },
@@ -540,7 +545,7 @@ test("Get Linked Activities for Activity", async () => {
 });
 
 test("Get Activity Link Type", async () => {
-    var aid = 4225599; // sample activity id
+    var aid = 3954794; // updated activity id
     // Get link templates to use a valid linkType
     var linkTemplatesResult = await myProxy.getLinkTemplates();
     expect(linkTemplatesResult.status).toBe(200);
@@ -552,7 +557,7 @@ test("Get Activity Link Type", async () => {
     expect(linkedActivitiesResult.status).toBeLessThan(400);
     var linkedActivityId = Array.isArray(linkedActivitiesResult.data.items) && linkedActivitiesResult.data.items.length > 0
         ? linkedActivitiesResult.data.items[0].activityId
-        : 4225600; // fallback to sample id if none found
+        : aid + 1; // fallback to next id if none found
     var result = await myProxy.getActivityLinkType(aid, linkedActivityId, linkType);
     // API may return 200 with link type info
     expect(result.status).toBeGreaterThanOrEqual(200);
