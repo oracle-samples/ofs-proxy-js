@@ -3,17 +3,18 @@
  * Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at https://oss.oracle.com/licenses/upl/
  */
 
-import { OFSCredentials } from "../../src/model";
+import { OFSCredentials, OFSBulkUpdateRequest } from "../../src/model";
 import { OFS } from "../../src/OFS";
-import myCredentials from "../credentials_test.json";
+import { getTestCredentials } from "../test_credentials";
 
 var myProxy: OFS;
 
 // Setup info
 beforeAll(() => {
-    myProxy = new OFS(myCredentials);
-    if ("instance" in myCredentials) {
-        expect(myProxy.instance).toBe(myCredentials.instance);
+    const credentials = getTestCredentials();
+    myProxy = new OFS(credentials);
+    if ("instance" in credentials) {
+        expect(myProxy.instance).toBe(credentials.instance);
     } else {
         expect(myProxy.baseURL).toBe(myProxy.baseURL);
     }

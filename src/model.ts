@@ -1,3 +1,30 @@
+export interface OFSLinkTemplate {
+    linkTemplateId: string;
+    name: string;
+    description?: string;
+    linkType: string;
+    sourceType: string;
+    targetType: string;
+    links?: any;
+}
+
+export interface OFSLinkTemplatesData {
+    totalResults: number;
+    items: OFSLinkTemplate[];
+    links?: any;
+}
+
+// ...existing code...
+// Move OFSLinkTemplatesResponse after OFSResponse
+// ...existing code...
+// ...existing code...
+// ...existing code...
+// ...existing code...
+// ...existing code...
+// ...existing code...
+// ...existing code...
+// ...existing code...
+// Place this after OFSResponse class
 /*
  * Copyright © 2022, 2023, Oracle and/or its affiliates.
  * Licensed under the Universal Permissive License (UPL), Version 1.0  as shown at https://oss.oracle.com/licenses/upl/
@@ -41,6 +68,18 @@ export class OFSResponse implements OFSResponseInterface {
         this.url = url;
         this.contentType = contentType;
     }
+}
+
+export class OFSLinkTemplatesResponse extends OFSResponse {
+    data: {
+        totalResults: number;
+        items: OFSLinkTemplate[];
+        links?: any;
+    } = {
+        totalResults: 0,
+        items: [],
+        links: undefined,
+    };
 }
 
 export interface ListResponse {
@@ -141,6 +180,32 @@ export class OFSActivityResponse extends OFSResponse {
     data: ActivityResponse = {
         customerName: undefined,
         activityId: 0,
+    };
+}
+
+export interface OFSLinkedActivitiesData {
+    totalResults: number;
+    items: ActivityResponse[];
+    links?: any;
+}
+
+export class OFSLinkedActivitiesResponse extends OFSResponse {
+    data: OFSLinkedActivitiesData = {
+        totalResults: 0,
+        items: [],
+        links: undefined,
+    };
+}
+
+export interface OFSActivityLinkTypeData {
+    linkType: string;
+    links?: any;
+}
+
+export class OFSActivityLinkTypeResponse extends OFSResponse {
+    data: OFSActivityLinkTypeData = {
+        linkType: '',
+        links: undefined
     };
 }
 

@@ -68,6 +68,10 @@ In order to use this library you need to have access to an Oracle Field Service 
 
 `getActivityFileProperty(activityId, propertyId)`: Get file property (content and metadata)
 
+`getLinkedActivities(activityId)`: Get activities linked to a specific activity
+
+`getActivityLinkType(activityId, linkedActivityId, linkType)`: Get the link type between two activities
+
 ### Core: Subscription Management
 
 `getSubscriptions()`: Get existing subscriptions
@@ -124,6 +128,7 @@ Please see the `docs/` directory for documentation and a simple example
 | 1.2     | Added `createActivity`, `deleteActivity`                                              |
 | 1.6     | Added `getUsers`, `getUserDetails`, `getAllUsers`                                     |
 | 1.8     | Added `getProperties`, `getPropertyDetails`, `updateProperty` `createReplaceProperty` |
+| 1.23    | Added `getLinkedActivities`, `getActivityLinkType` methods                           |
 
 ## Contributing
 

@@ -24,6 +24,8 @@ import {
     OFSLastKnownPositionsResponse,
     OFSGetSubmittedFormsParams,
     OFSSubmittedFormsResponse,
+    OFSActivityLinkTypeResponse,
+    OFSLinkTemplatesResponse,
 } from "./model";
 
 export * from "./model";
@@ -456,6 +458,25 @@ export class OFS {
         const partialURL = `/rest/ofscCore/v1/activities/${aid}`;
         return this._get(partialURL);
     }
+    /**
+     * Retrieve activities linked to an existing activity
+     * @param aid Activity id to retrieve linked activities for
+     */
+    async getLinkedActivities(aid: number): Promise<OFSResponse> {
+        const partialURL = `/rest/ofscCore/v1/activities/${aid}/linkedActivities`;
+        return this._get(partialURL);
+    }
+
+    /**
+     * Retrieve the link type between two activities
+     * @param aid Activity id
+     * @param linkedActivityId Linked activity id
+     * @param linkType Type of link to retrieve
+     */
+    async getActivityLinkType(aid: number, linkedActivityId: number, linkType: string): Promise<OFSActivityLinkTypeResponse> {
+        const partialURL = `/rest/ofscCore/v1/activities/${aid}/linkedActivities/${linkedActivityId}/linkTypes/${linkType}`;
+        return this._get(partialURL);
+    }
     async updateActivity(aid: number, data: any): Promise<OFSResponse> {
         const partialURL = `/rest/ofscCore/v1/activities/${aid}`;
         return this._patch(partialURL, data);
@@ -877,6 +898,12 @@ export class OFS {
     ): Promise<OFSPropertyListResponse> {
         const partialURL = "/rest/ofscMetadata/v1/properties";
         return this._get(partialURL, params);
+    }
+
+    //Meta: Link Templates
+    async getLinkTemplates(): Promise<OFSLinkTemplatesResponse> {
+        const partialURL = "/rest/ofscMetadata/v1/linkTemplates";
+        return this._get(partialURL) as Promise<OFSLinkTemplatesResponse>;
     }
 
     async getPropertyDetails(pid: string): Promise<OFSPropertyDetailsResponse> {

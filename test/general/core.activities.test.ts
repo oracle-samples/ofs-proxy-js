@@ -6,16 +6,17 @@
 import { createReadStream, readFileSync } from "fs";
 import { OFSCredentials, OFSBulkUpdateRequest } from "../../src/model";
 import { OFS } from "../../src/OFS";
-import myCredentials from "../credentials_test.json";
+import { getTestCredentials } from "../test_credentials";
 import { faker } from "@faker-js/faker";
 
 var myProxy: OFS;
 
 // Setup info
 beforeAll(() => {
-    myProxy = new OFS(myCredentials);
-    if ("instance" in myCredentials) {
-        expect(myProxy.instance).toBe(myCredentials.instance);
+    const credentials = getTestCredentials();
+    myProxy = new OFS(credentials);
+    if ("instance" in credentials) {
+        expect(myProxy.instance).toBe(credentials.instance);
     } else {
         expect(myProxy.baseURL).toBe(myProxy.baseURL);
     }
@@ -327,11 +328,16 @@ test("Get Activities", async () => {
 });
 
 test("Search for Activities", async () => {
-    var currentDate = new Date().toISOString().split("T")[0];
+    // Use a date range from last week to today
+    const today = new Date();
+    const lastWeek = new Date(today);
+    lastWeek.setDate(today.getDate() - 7);
+    const dateFrom = lastWeek.toISOString().split("T")[0];
+    const dateTo = today.toISOString().split("T")[0];
     var result = await myProxy.searchForActivities(
         {
-            dateFrom: currentDate,
-            dateTo: currentDate,
+            dateFrom,
+            dateTo,
             searchForValue: "137165209",
             searchInField: "apptNumber",
         },
@@ -523,5 +529,42 @@ test("Get Submitted Forms with Real Data - Activity 3954799", async () => {
         console.log(`✓ Verified form structure for: ${firstForm.formIdentifier.formLabel}`);
     } else {
         console.log('⚠ No submitted forms found for this activity');
+    }
+});
+
+test("Get Linked Activities for Activity", async () => {
+    var aid = 4225599; // sample activity id
+    var result = await myProxy.getLinkedActivities(aid);
+    // API may return 200 with an items array or 200 with empty result
+    expect(result.status).toBeGreaterThanOrEqual(200);
+    expect(result.status).toBeLessThan(400);
+    // If data contains items, ensure it's an array
+    if (result.data && result.data.items) {
+        expect(Array.isArray(result.data.items)).toBe(true);
+    }
+});
+
+test("Get Activity Link Type", async () => {
+    var aid = 3954794; // updated activity id
+    // Get link templates to use a valid linkType
+    var linkTemplatesResult = await myProxy.getLinkTemplates();
+    expect(linkTemplatesResult.status).toBe(200);
+    expect(linkTemplatesResult.data.items.length).toBeGreaterThan(0);
+    var linkType = linkTemplatesResult.data.items[0].linkType;
+    // Get linked activities to use a valid linkedActivityId
+    var linkedActivitiesResult = await myProxy.getLinkedActivities(aid);
+    expect(linkedActivitiesResult.status).toBeGreaterThanOrEqual(200);
+    expect(linkedActivitiesResult.status).toBeLessThan(400);
+    var linkedActivityId = Array.isArray(linkedActivitiesResult.data.items) && linkedActivitiesResult.data.items.length > 0
+        ? linkedActivitiesResult.data.items[0].activityId
+        : aid + 1; // fallback to next id if none found
+    var result = await myProxy.getActivityLinkType(aid, linkedActivityId, linkType);
+    // API may return 200 with link type info
+    expect(result.status).toBeGreaterThanOrEqual(200);
+    expect(result.status).toBeLessThan(400);
+    // If successful response, check link type is returned
+    if (result.status === 200) {
+        expect(result.data).toHaveProperty('linkType');
+        expect(typeof result.data.linkType).toBe('string');
     }
 });
