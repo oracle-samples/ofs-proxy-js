@@ -24,6 +24,7 @@ import {
     OFSLastKnownPositionsResponse,
     OFSGetSubmittedFormsParams,
     OFSSubmittedFormsResponse,
+    OFSActivityLinkTypeResponse,
 } from "./model";
 
 export * from "./model";
@@ -454,6 +455,25 @@ export class OFS {
 
     async getActivityDetails(aid: number): Promise<OFSActivityResponse> {
         const partialURL = `/rest/ofscCore/v1/activities/${aid}`;
+        return this._get(partialURL);
+    }
+    /**
+     * Retrieve activities linked to an existing activity
+     * @param aid Activity id to retrieve linked activities for
+     */
+    async getLinkedActivities(aid: number): Promise<OFSResponse> {
+        const partialURL = `/rest/ofscCore/v1/activities/${aid}/linkedActivities`;
+        return this._get(partialURL);
+    }
+
+    /**
+     * Retrieve the link type between two activities
+     * @param aid Activity id
+     * @param linkedActivityId Linked activity id
+     * @param linkType Type of link to retrieve
+     */
+    async getActivityLinkType(aid: number, linkedActivityId: number, linkType: string): Promise<OFSActivityLinkTypeResponse> {
+        const partialURL = `/rest/ofscCore/v1/activities/${aid}/linkedActivities/${linkedActivityId}/linkTypes/${linkType}`;
         return this._get(partialURL);
     }
     async updateActivity(aid: number, data: any): Promise<OFSResponse> {

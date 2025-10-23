@@ -144,6 +144,32 @@ export class OFSActivityResponse extends OFSResponse {
     };
 }
 
+export interface OFSLinkedActivitiesData {
+    totalResults: number;
+    items: ActivityResponse[];
+    links?: any;
+}
+
+export class OFSLinkedActivitiesResponse extends OFSResponse {
+    data: OFSLinkedActivitiesData = {
+        totalResults: 0,
+        items: [],
+        links: undefined,
+    };
+}
+
+export interface OFSActivityLinkTypeData {
+    linkType: string;
+    links?: any;
+}
+
+export class OFSActivityLinkTypeResponse extends OFSResponse {
+    data: OFSActivityLinkTypeData = {
+        linkType: '',
+        links: undefined
+    };
+}
+
 export class OFSPropertyDetailsResponse extends OFSResponse {
     data: OFSPropertyDetails = {
         label: "",
