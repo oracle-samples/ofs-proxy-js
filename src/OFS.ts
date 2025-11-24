@@ -26,6 +26,10 @@ import {
     OFSSubmittedFormsResponse,
     OFSActivityLinkTypeResponse,
     OFSLinkTemplatesResponse,
+    OFSShowBookingGridParams,
+    OFSShowBookingGridResponse,
+    OFSGetActivityBookingOptionsParams,
+    OFSGetActivityBookingOptionsResponse,
 } from "./model";
 
 export * from "./model";
@@ -929,5 +933,51 @@ export class OFS {
     async getTimeslots(): Promise<OFSTimeslotsResponse> {
         const partialURL = `/rest/ofscMetadata/v1/timeSlots`;
         return this._get(partialURL);
+    }
+
+    // Capacity API: Booking Grid
+    /**
+     * Retrieves the time slots in which an activity can be performed.
+     * @param params Parameters for the booking grid request
+     * @returns The booking grid response with available time slots
+     */
+    async showBookingGrid(
+        params: OFSShowBookingGridParams
+    ): Promise<OFSShowBookingGridResponse> {
+        const partialURL = "/rest/ofscCapacity/v1/showBookingGrid";
+        return this._post(partialURL, params);
+    }
+
+    // Capacity API: Activity Booking Options
+    /**
+     * Retrieves available booking options for an activity type on specific dates.
+     * @param params Parameters for the activity booking options request
+     * @returns The activity booking options response with available time slots by date/area
+     */
+    async getActivityBookingOptions(
+        params: OFSGetActivityBookingOptionsParams
+    ): Promise<OFSGetActivityBookingOptionsResponse> {
+        const partialURL = "/rest/ofscCapacity/v1/activityBookingOptions";
+        const queryParams: any = {};
+
+        // Known array parameters that need CSV conversion
+        const arrayParams = ['dates', 'areas', 'categories'];
+
+        // Process all parameters
+        for (const [key, value] of Object.entries(params)) {
+            if (value === undefined) continue;
+
+            if (arrayParams.includes(key) && Array.isArray(value)) {
+                // Convert arrays to CSV format
+                if (value.length > 0) {
+                    queryParams[key] = value.join(',');
+                }
+            } else {
+                // Pass through all other parameters as-is
+                queryParams[key] = value;
+            }
+        }
+
+        return this._get(partialURL, queryParams);
     }
 }
