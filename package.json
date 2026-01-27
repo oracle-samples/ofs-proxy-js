@@ -7,14 +7,22 @@
     "type": "module",
     "version": "1.15.1",
     "description": "A Javascript proxy to access Oracle Field Service via REST API",
-    "main": "dist/ofs.es.js",
+    "main": "dist/ofs.cjs",
     "module": "dist/ofs.es.js",
     "types": "dist/OFS.d.ts",
+    "exports": {
+        ".": {
+            "import": "./dist/ofs.es.js",
+            "require": "./dist/ofs.cjs",
+            "types": "./dist/OFS.d.ts"
+        }
+    },
     "repository": {
         "url": "git+https://github.com/oracle-samples/ofs-proxy-js.git"
     },
     "scripts": {
         "build": "tsc",
+        "build:cjs": "rollup --config rollup.config.cjs.mjs",
         "start": "ts-node src/index.ts",
         "test": "jest",
         "dist": "rollup --config rollup.config.mjs",
