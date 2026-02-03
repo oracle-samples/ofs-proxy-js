@@ -18,7 +18,9 @@ import {
     OFSSearchForActivitiesParams,
     OFSBulkUpdateRequest,
     OFSGetResourcesParams,
+    OFSGetResourceParams,
     OFSResourceResponse,
+    OFSSingleResourceResponse,
     OFSResourceRoutesResponse,
     OFSGetLastKnownPositionsParams,
     OFSLastKnownPositionsResponse,
@@ -729,6 +731,29 @@ export class OFS {
             }
         } while (result.data.items.length == limit);
         return allResults;
+    }
+
+    /**
+     * Retrieves a single resource by ID from the OFS API.
+     * @param resourceId The ID of the resource to retrieve
+     * @param params Optional parameters for expanding or filtering fields
+     * @returns The resource details
+     */
+    async getResource(
+        resourceId: string,
+        params: OFSGetResourceParams = {}
+    ): Promise<OFSSingleResourceResponse> {
+        const partialURL = `/rest/ofscCore/v1/resources/${resourceId}`;
+        const queryParams: any = {};
+
+        if (params.expand && params.expand.length > 0) {
+            queryParams.expand = params.expand.join(',');
+        }
+        if (params.fields && params.fields.length > 0) {
+            queryParams.fields = params.fields.join(',');
+        }
+
+        return this._get(partialURL, Object.keys(queryParams).length > 0 ? queryParams : undefined);
     }
 
     async getResourceRoutes(
