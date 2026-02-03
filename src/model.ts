@@ -447,4 +447,159 @@ export class OFSSubmittedFormsResponse extends OFSResponse {
         items: [],
     };
 }
-1
+
+// Capacity API: showBookingGrid
+export interface OFSShowBookingGridParams {
+    activity: Record<string, any>;
+    dateFrom: string;
+    dateTo?: string;
+    identifyActivityBy?: 'activityId' | 'apptNumber' | 'apptNumberPlusCustomerNumber';
+    includeResourcesDictionary?: boolean;
+    includeTimeSlotsDictionary?: boolean;
+    returnReasons?: boolean;
+    resourceFields?: string[];
+    lateStartMitigation?: number;
+    forecastDuringBooking?: Record<string, any>;
+}
+
+export interface OFSBookingGridTimeSlot {
+    label: string;
+    originalQuota?: number;
+    remainingQuota?: number;
+    reason?: string;
+    recommendationInfo?: {
+        additionalTravel?: number;
+        travelKeyMatch?: boolean;
+    };
+    setPositionInRoute?: string;
+}
+
+export interface OFSBookingGridDate {
+    date: string;
+    timeSlots: OFSBookingGridTimeSlot[];
+}
+
+export interface OFSBookingGridArea {
+    label: string;
+    name?: string;
+    bucket?: string;
+    timeZone?: string;
+    timeZoneDiff?: number;
+    areaTimeSlots?: string[];
+    averageBucketTravel?: number;
+    dates: OFSBookingGridDate[];
+}
+
+export interface OFSTimeSlotDictionary {
+    label: string;
+    name?: string;
+    timeStart?: string;
+    timeEnd?: string;
+    active?: boolean;
+    isAllDay?: boolean;
+}
+
+export interface OFSResourceDictionary {
+    resourceId: string;
+    [key: string]: any;
+}
+
+export interface OFSShowBookingGridData {
+    actualAtTime?: string;
+    duration?: number;
+    travelTime?: number;
+    workZone?: string;
+    areas: OFSBookingGridArea[];
+    resourcesDictionary?: OFSResourceDictionary[];
+    timeSlotsDictionary?: OFSTimeSlotDictionary[];
+}
+
+export class OFSShowBookingGridResponse extends OFSResponse {
+    data: OFSShowBookingGridData = {
+        areas: [],
+    };
+}
+
+// Capacity API: getActivityBookingOptions
+export interface OFSGetActivityBookingOptionsParams {
+    /** The type of the activity. Based on the activity type, predefined company-specific rules are applied (required) */
+    activityType: string;
+    /** The dates for which the booking options are requested in YYYY-MM-DD format (required) */
+    dates: string[];
+    /** Capacity area labels; if omitted and determineAreaByWorkZone=false, processes all visible areas */
+    areas?: string[];
+    /** Capacity category labels for filtering */
+    categories?: string[];
+    /** Customer city location; used for geocoding */
+    city?: string;
+    /** Customer postal code; used for geocoding */
+    postalCode?: string;
+    /** Customer state/province; used for geocoding */
+    stateProvince?: string;
+    /** Customer street address; used for geocoding */
+    streetAddress?: string;
+    /** Activity location latitude coordinate in degrees (-90 to 90) */
+    latitude?: number;
+    /** Activity location longitude coordinate in degrees (-180 to 180) */
+    longitude?: number;
+    /** If true, estimates activity duration using statistics. Default: true */
+    estimateDuration?: boolean;
+    /** If true, estimates travel time using statistics when configured. Default: true */
+    estimateTravelTime?: boolean;
+    /** If true, determines categories from work skill conditions. Default: true */
+    determineCategory?: boolean;
+    /** If true, determines work zone automatically; requires all work zone key fields. Default: true */
+    determineAreaByWorkZone?: boolean;
+    /** Duration in minutes when estimation disabled or statistical record unavailable. Default: activity type default */
+    defaultDuration?: number;
+    /** For day-0 bookings: only returns intervals starting after currentTime + this value (minutes) */
+    minTimeBeforeArrival?: number;
+    /** If true, returns areas with at least one matching category. Default: false */
+    includePartiallyDefinedCategories?: boolean;
+    /** Allow additional custom parameters as key-value pairs */
+    [key: string]: string | string[] | number | boolean | undefined;
+}
+
+export interface OFSBookingOptionsTimeSlot {
+    label: string;
+    originalQuota?: number;
+    remainingQuota?: number;
+    reason?: string;
+    recommendationInfo?: {
+        additionalTravel?: number;
+        travelKeyMatch?: boolean;
+    };
+}
+
+export interface OFSBookingOptionsArea {
+    label: string;
+    name?: string;
+    bucket?: string;
+    timeZone?: string;
+    timeZoneDiff?: number;
+    averageBucketTravel?: number;
+    averageTravelKeyTravel?: number;
+    timeSlots: OFSBookingOptionsTimeSlot[];
+    reason?: string;
+}
+
+export interface OFSBookingOptionsDate {
+    date: string;
+    areas: OFSBookingOptionsArea[];
+}
+
+export interface OFSGetActivityBookingOptionsData {
+    actualAtTime?: string;
+    duration?: number;
+    travelTime?: number;
+    workZone?: string;
+    categories?: string[];
+    dates: OFSBookingOptionsDate[];
+    timeSlotsDictionary?: OFSTimeSlotDictionary[];
+}
+
+export class OFSGetActivityBookingOptionsResponse extends OFSResponse {
+    data: OFSGetActivityBookingOptionsData = {
+        dates: [],
+    };
+}
