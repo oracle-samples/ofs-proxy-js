@@ -20,6 +20,79 @@ beforeAll(() => {
     }
 });
 
+// Tests for getResource method
+test("Get Resource with valid ID", async () => {
+    var resourceId = "33035";
+    var result = await myProxy.getResource(resourceId);
+
+    expect(result).toBeDefined();
+    expect(result.status).toBeDefined();
+    expect(result.data).toBeDefined();
+
+    if (result.status === 200 && result.data) {
+        expect(result.data.resourceId).toBe(resourceId);
+        expect(result.data.name).toBeDefined();
+        expect(result.data.status).toBeDefined();
+        expect(result.data.resourceType).toBeDefined();
+    }
+});
+
+test("Get Resource with invalid ID", async () => {
+    var resourceId = "INVALID_RESOURCE_ID_12345";
+    var result = await myProxy.getResource(resourceId);
+
+    expect(result).toBeDefined();
+    expect(result.status).toBeDefined();
+
+    // Expecting 404 for non-existent resource
+    expect(result.status).toBeGreaterThanOrEqual(400);
+});
+
+test("Get Resource with fields parameter", async () => {
+    var resourceId = "33035";
+    var fields = ["resourceId", "name", "status"];
+    var result = await myProxy.getResource(resourceId, { fields });
+
+    expect(result).toBeDefined();
+    expect(result.status).toBeDefined();
+    expect(result.data).toBeDefined();
+
+    if (result.status === 200 && result.data) {
+        expect(result.data.resourceId).toBe(resourceId);
+    }
+});
+
+test("Get Resource with expand parameter", async () => {
+    var resourceId = "33035";
+    var expand = ["workSkills", "workZones"];
+    var result = await myProxy.getResource(resourceId, { expand });
+
+    expect(result).toBeDefined();
+    expect(result.status).toBeDefined();
+    expect(result.data).toBeDefined();
+
+    if (result.status === 200 && result.data) {
+        expect(result.data.resourceId).toBe(resourceId);
+    }
+});
+
+test("Get Resource response structure validation", async () => {
+    var resourceId = "33035";
+    var result = await myProxy.getResource(resourceId);
+
+    expect(result).toBeDefined();
+    expect(result.status).toBeDefined();
+    expect(typeof result.status).toBe('number');
+    expect(result.data).toBeDefined();
+
+    if (result.status === 200) {
+        expect(result.data.resourceId).toBeDefined();
+        expect(typeof result.data.resourceId).toBe('string');
+        expect(result.data.name).toBeDefined();
+        expect(typeof result.data.name).toBe('string');
+    }
+});
+
 test("Get Resource Routes with default activity fields", async () => {
     var resourceId = "100000471803411";
     var date = "2025-06-23";

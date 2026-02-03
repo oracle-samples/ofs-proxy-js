@@ -350,6 +350,20 @@ export class OFSResourceResponse extends OFSResponse {
     };
 }
 
+export interface OFSGetResourceParams {
+    expand?: string[];
+    fields?: string[];
+}
+
+export class OFSSingleResourceResponse extends OFSResponse {
+    data: OFSResource = {
+        resourceId: '',
+        name: '',
+        status: '',
+        resourceType: '',
+    };
+}
+
 export interface OFSGetResourceRoutesParams {
     resourceId: string;
     date: string;
