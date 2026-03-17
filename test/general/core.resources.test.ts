@@ -598,3 +598,83 @@ test("Get All Last Known Positions should handle pagination", async () => {
     // No hasMore field should be present in the final result
     expect(result.hasMore).toBeUndefined();
 });
+
+// Tests for getResourceAssistants method
+test("Get Resource Assistants with valid resource ID", async () => {
+    var resourceId = "33023";
+    var dateFrom = new Date(Date.now() + 24 * 60 * 60 * 1000)
+        .toISOString()
+        .split('T')[0];
+    var result = await myProxy.getResourceAssistants(resourceId, { dateFrom });
+
+    expect(result).toBeDefined();
+    expect(result.status).toBeDefined();
+    expect(result.data).toBeDefined();
+
+    if (result.status === 200 && result.data) {
+        if (Array.isArray(result.data)) {
+            expect(Array.isArray(result.data)).toBe(true);
+        } else {
+            expect(result.data.totalResults).toBeDefined();
+            expect(Array.isArray(result.data.items)).toBe(true);
+        }
+    }
+});
+
+test("Get Resource Assistants with pagination parameters", async () => {
+    var resourceId = "33023";
+    var dateFrom = new Date(Date.now() + 24 * 60 * 60 * 1000)
+        .toISOString()
+        .split('T')[0];
+    var result = await myProxy.getResourceAssistants(resourceId, {
+        dateFrom,
+        offset: 0,
+        limit: 1,
+    });
+
+    expect(result).toBeDefined();
+    expect(result.status).toBeDefined();
+    expect(result.data).toBeDefined();
+
+    if (result.status === 200 && result.data) {
+        if (Array.isArray(result.data)) {
+            expect(result.data.length).toBeLessThanOrEqual(1);
+        } else {
+            expect(Array.isArray(result.data.items)).toBe(true);
+            expect(result.data.items.length).toBeLessThanOrEqual(1);
+        }
+    }
+});
+
+test("Get Resource Assistants with invalid resource ID", async () => {
+    var resourceId = "INVALID_RESOURCE_ID_12345";
+    var result = await myProxy.getResourceAssistants(resourceId);
+
+    expect(result).toBeDefined();
+    expect(result.status).toBeDefined();
+    expect(result.status).toBeGreaterThanOrEqual(400);
+});
+
+// Tests for getAllResourceAssistants method
+test("Get All Resource Assistants with valid resource ID", async () => {
+    var resourceId = "33023";
+    var dateFrom = new Date(Date.now() + 24 * 60 * 60 * 1000)
+        .toISOString()
+        .split('T')[0];
+    var result = await myProxy.getAllResourceAssistants(resourceId, { dateFrom });
+
+    expect(result).toBeDefined();
+    expect(result.totalResults).toBeDefined();
+    expect(typeof result.totalResults).toBe('number');
+    expect(Array.isArray(result.items)).toBe(true);
+    expect(result.totalResults).toBe(result.items.length);
+});
+
+test("Get All Resource Assistants with invalid resource ID", async () => {
+    var resourceId = "INVALID_RESOURCE_ID_12345";
+    var result = await myProxy.getAllResourceAssistants(resourceId);
+
+    expect(result).toBeDefined();
+    expect(result.status).toBeDefined();
+    expect(result.status).toBeGreaterThanOrEqual(400);
+});

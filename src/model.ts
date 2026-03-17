@@ -355,12 +355,39 @@ export interface OFSGetResourceParams {
     fields?: string[];
 }
 
+export interface OFSGetResourceAssistantsParams {
+    dateFrom?: string;
+    expand?: string[];
+    fields?: string[];
+    limit?: number;
+    offset?: number;
+}
+
 export class OFSSingleResourceResponse extends OFSResponse {
     data: OFSResource = {
         resourceId: '',
         name: '',
         status: '',
         resourceType: '',
+    };
+}
+
+export interface OFSResourceAssistantsData {
+    totalResults: number;
+    limit?: number;
+    offset?: number;
+    hasMore?: boolean;
+    items: OFSResource[];
+    links?: any;
+}
+
+export class OFSResourceAssistantsResponse extends OFSResponse {
+    data: OFSResourceAssistantsData = {
+        totalResults: 0,
+        limit: 100,
+        offset: 0,
+        items: [],
+        links: undefined,
     };
 }
 

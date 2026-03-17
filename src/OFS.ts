@@ -19,8 +19,10 @@ import {
     OFSBulkUpdateRequest,
     OFSGetResourcesParams,
     OFSGetResourceParams,
+    OFSGetResourceAssistantsParams,
     OFSResourceResponse,
     OFSSingleResourceResponse,
+    OFSResourceAssistantsResponse,
     OFSResourceRoutesResponse,
     OFSGetLastKnownPositionsParams,
     OFSLastKnownPositionsResponse,
@@ -754,6 +756,105 @@ export class OFS {
         }
 
         return this._get(partialURL, Object.keys(queryParams).length > 0 ? queryParams : undefined);
+    }
+
+    /**
+     * Retrieves assistants for a given resource.
+     * @param resourceId The ID of the resource
+     * @param params Optional parameters for expanding/filtering fields and pagination
+     * @returns A paginated list of assistants for the resource
+     */
+    async getResourceAssistants(
+        resourceId: string,
+        params: OFSGetResourceAssistantsParams = {}
+    ): Promise<OFSResourceAssistantsResponse> {
+        const partialURL = `/rest/ofscCore/v1/resources/${resourceId}/assistants`;
+        const queryParams: any = {};
+        queryParams.dateFrom =
+            params.dateFrom || new Date().toISOString().split('T')[0];
+
+        if (params.expand && params.expand.length > 0) {
+            queryParams.expand = params.expand.join(',');
+        }
+        if (params.fields && params.fields.length > 0) {
+            queryParams.fields = params.fields.join(',');
+        }
+        if (params.limit !== undefined) {
+            queryParams.limit = params.limit;
+        }
+        if (params.offset !== undefined) {
+            queryParams.offset = params.offset;
+        }
+
+        return this._get(partialURL, Object.keys(queryParams).length > 0 ? queryParams : undefined);
+    }
+
+    /**
+     * Retrieves all assistants for a given resource using pagination.
+     * @param resourceId The ID of the resource
+     * @param params Optional parameters for expanding/filtering fields (excludes pagination)
+     * @returns An object containing all assistants for the resource
+     */
+    async getAllResourceAssistants(
+        resourceId: string,
+        params: Omit<OFSGetResourceAssistantsParams, 'limit' | 'offset'> = {}
+    ) {
+        const partialURL = `/rest/ofscCore/v1/resources/${resourceId}/assistants`;
+        var offset = 0;
+        var limit = 100;
+        var result: any = undefined;
+        var allResults: any = { totalResults: 0, items: [] };
+
+        const queryParams: any = {};
+        queryParams.dateFrom =
+            params.dateFrom || new Date().toISOString().split('T')[0];
+
+        if (params.expand && params.expand.length > 0) {
+            queryParams.expand = params.expand.join(',');
+        }
+        if (params.fields && params.fields.length > 0) {
+            queryParams.fields = params.fields.join(',');
+        }
+
+        do {
+            result = await this._get(partialURL, {
+                ...queryParams,
+                offset: offset,
+                limit: limit,
+            });
+
+            if (result.status < 400) {
+                const pageItems = Array.isArray(result.data)
+                    ? result.data
+                    : result.data?.items || [];
+
+                if (allResults.totalResults == 0) {
+                    if (Array.isArray(result.data)) {
+                        allResults = { totalResults: 0, items: [] };
+                    } else {
+                        allResults = result.data;
+                    }
+                }
+
+                if (allResults.items === undefined) {
+                    allResults.items = [];
+                }
+
+                if (allResults.totalResults === 0 && allResults.items.length === 0) {
+                    allResults.items = pageItems;
+                } else {
+                    allResults.items = allResults.items.concat(pageItems);
+                }
+
+                allResults.totalResults = allResults.items.length;
+
+                offset += limit;
+            } else {
+                return result;
+            }
+        } while ((Array.isArray(result.data) ? result.data.length : result.data?.items?.length || 0) == limit);
+
+        return allResults;
     }
 
     async getResourceRoutes(
