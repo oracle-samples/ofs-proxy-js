@@ -357,6 +357,7 @@ export interface OFSGetResourceParams {
 
 export interface OFSGetResourceAssistantsParams {
     dateFrom?: string;
+    dateTo?: string;
     expand?: string[];
     fields?: string[];
     limit?: number;

@@ -5,10 +5,19 @@
     ],
     "name": "@ofs-users/proxy",
     "type": "module",
-    "version": "1.28.0",
+    "version": "1.29.0",
     "description": "A Javascript proxy to access Oracle Field Service via REST API",
     "main": "dist/ofs.es.js",
     "module": "dist/ofs.es.js",
+    "exports": {
+        ".": {
+            "types": "./dist/OFS.d.ts",
+            "default": "./dist/ofs.es.js"
+        },
+        "./amd": {
+            "default": "./dist/ofs.amd.js"
+        }
+    },
     "types": "dist/OFS.d.ts",
     "repository": {
         "url": "git+https://github.com/oracle-samples/ofs-proxy-js.git"
