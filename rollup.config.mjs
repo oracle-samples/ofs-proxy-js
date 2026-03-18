@@ -9,11 +9,18 @@ import dts from "rollup-plugin-dts";
 const config = [
     {
         input: "src/OFS.ts",
-        output: {
-            name: "OFS",
-            file: "dist/ofs.es.js",
-            format: "es",
-        },
+        output: [
+            {
+                name: "OFS",
+                file: "dist/ofs.es.js",
+                format: "es",
+            },
+            {
+                name: "OFS",
+                file: "dist/ofs.amd.js",
+                format: "amd",
+            },
+        ],
         plugins: [
             typescript(),
             terser({

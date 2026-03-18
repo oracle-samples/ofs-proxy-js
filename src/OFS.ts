@@ -772,6 +772,9 @@ export class OFS {
         const queryParams: any = {};
         queryParams.dateFrom =
             params.dateFrom || new Date().toISOString().split('T')[0];
+        if (params.dateTo !== undefined) {
+            queryParams.dateTo = params.dateTo;
+        }
 
         if (params.expand && params.expand.length > 0) {
             queryParams.expand = params.expand.join(',');
@@ -808,6 +811,9 @@ export class OFS {
         const queryParams: any = {};
         queryParams.dateFrom =
             params.dateFrom || new Date().toISOString().split('T')[0];
+        if (params.dateTo !== undefined) {
+            queryParams.dateTo = params.dateTo;
+        }
 
         if (params.expand && params.expand.length > 0) {
             queryParams.expand = params.expand.join(',');
