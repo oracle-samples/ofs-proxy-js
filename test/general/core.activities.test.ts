@@ -365,7 +365,7 @@ test("Search for Activities", async () => {
     expect(Array.isArray(result.data.items)).toBe(true);
     // The exact number may vary, just verify structure
     if (result.data.items.length > 0) {
-        expect(result.data.items[0]).toHaveProperty('activityId');
+        expect(result.data.items[0]).toHaveProperty("activityId");
     }
 });
 
@@ -450,22 +450,22 @@ test("Get Submitted Forms for Activity", async () => {
     var aid = 3954799; // Activity with known submitted forms
     var result = await myProxy.getSubmittedForms(aid);
     expect(result.status).toBe(200);
-    expect(result.data).toHaveProperty('items');
-    expect(result.data).toHaveProperty('totalResults');
-    expect(result.data).toHaveProperty('hasMore');
-    expect(result.data).toHaveProperty('offset');
-    expect(result.data).toHaveProperty('limit');
+    expect(result.data).toHaveProperty("items");
+    expect(result.data).toHaveProperty("totalResults");
+    expect(result.data).toHaveProperty("hasMore");
+    expect(result.data).toHaveProperty("offset");
+    expect(result.data).toHaveProperty("limit");
     expect(Array.isArray(result.data.items)).toBe(true);
 
     // Verify structure of submitted forms if any exist
     if (result.data.items.length > 0) {
         const firstForm = result.data.items[0];
-        expect(firstForm).toHaveProperty('time');
-        expect(firstForm).toHaveProperty('user');
-        expect(firstForm).toHaveProperty('formIdentifier');
-        expect(firstForm.formIdentifier).toHaveProperty('formSubmitId');
-        expect(firstForm.formIdentifier).toHaveProperty('formLabel');
-        expect(firstForm).toHaveProperty('formDetails');
+        expect(firstForm).toHaveProperty("time");
+        expect(firstForm).toHaveProperty("user");
+        expect(firstForm).toHaveProperty("formIdentifier");
+        expect(firstForm.formIdentifier).toHaveProperty("formSubmitId");
+        expect(firstForm.formIdentifier).toHaveProperty("formLabel");
+        expect(firstForm).toHaveProperty("formDetails");
     }
 });
 
@@ -500,40 +500,42 @@ test("Get Submitted Forms with Real Data - Activity 3954799", async () => {
     console.log(`Limit: ${result.data.limit}`);
     console.log(`Number of items: ${result.data.items.length}`);
     console.log(`Full Response:`, JSON.stringify(result.data, null, 2));
-    console.log('==========================================================\n');
+    console.log("==========================================================\n");
 
     // Verify successful response
     expect(result.status).toBe(200);
-    expect(result.data).toHaveProperty('totalResults');
-    expect(result.data).toHaveProperty('items');
+    expect(result.data).toHaveProperty("totalResults");
+    expect(result.data).toHaveProperty("items");
     expect(Array.isArray(result.data.items)).toBe(true);
 
     // If we have data, verify structure
     if (result.data.totalResults > 0 && result.data.items.length > 0) {
         const firstForm = result.data.items[0];
-        expect(firstForm).toHaveProperty('time');
-        expect(firstForm).toHaveProperty('user');
-        expect(typeof firstForm.time).toBe('string');
-        expect(typeof firstForm.user).toBe('string');
+        expect(firstForm).toHaveProperty("time");
+        expect(firstForm).toHaveProperty("user");
+        expect(typeof firstForm.time).toBe("string");
+        expect(typeof firstForm.user).toBe("string");
 
         // Verify formIdentifier structure
-        expect(firstForm.formIdentifier).toHaveProperty('formSubmitId');
-        expect(firstForm.formIdentifier).toHaveProperty('formLabel');
-        expect(typeof firstForm.formIdentifier.formSubmitId).toBe('string');
-        expect(typeof firstForm.formIdentifier.formLabel).toBe('string');
+        expect(firstForm.formIdentifier).toHaveProperty("formSubmitId");
+        expect(firstForm.formIdentifier).toHaveProperty("formLabel");
+        expect(typeof firstForm.formIdentifier.formSubmitId).toBe("string");
+        expect(typeof firstForm.formIdentifier.formLabel).toBe("string");
 
         // Verify formDetails is an object
         expect(firstForm.formDetails).toBeDefined();
-        expect(typeof firstForm.formDetails).toBe('object');
+        expect(typeof firstForm.formDetails).toBe("object");
 
-        console.log(`✓ Verified form structure for: ${firstForm.formIdentifier.formLabel}`);
+        console.log(
+            `✓ Verified form structure for: ${firstForm.formIdentifier.formLabel}`
+        );
     } else {
-        console.log('⚠ No submitted forms found for this activity');
+        console.log("⚠ No submitted forms found for this activity");
     }
 });
 
 test("Get Linked Activities for Activity", async () => {
-    var aid = 4225599; // sample activity id
+    var aid = 3951808; // sample activity id
     var result = await myProxy.getLinkedActivities(aid);
     // API may return 200 with an items array or 200 with empty result
     expect(result.status).toBeGreaterThanOrEqual(200);
@@ -545,26 +547,43 @@ test("Get Linked Activities for Activity", async () => {
 });
 
 test("Get Activity Link Type", async () => {
-    var aid = 3954794; // updated activity id
-    // Get link templates to use a valid linkType
-    var linkTemplatesResult = await myProxy.getLinkTemplates();
-    expect(linkTemplatesResult.status).toBe(200);
-    expect(linkTemplatesResult.data.items.length).toBeGreaterThan(0);
-    var linkType = linkTemplatesResult.data.items[0].linkType;
-    // Get linked activities to use a valid linkedActivityId
+    var aid = 3951808; // updated activity id
+
+    // Get linked activities to find an existing link
     var linkedActivitiesResult = await myProxy.getLinkedActivities(aid);
     expect(linkedActivitiesResult.status).toBeGreaterThanOrEqual(200);
     expect(linkedActivitiesResult.status).toBeLessThan(400);
-    var linkedActivityId = Array.isArray(linkedActivitiesResult.data.items) && linkedActivitiesResult.data.items.length > 0
-        ? linkedActivitiesResult.data.items[0].activityId
-        : aid + 1; // fallback to next id if none found
-    var result = await myProxy.getActivityLinkType(aid, linkedActivityId, linkType);
-    // API may return 200 with link type info
-    expect(result.status).toBeGreaterThanOrEqual(200);
-    expect(result.status).toBeLessThan(400);
-    // If successful response, check link type is returned
-    if (result.status === 200) {
-        expect(result.data).toHaveProperty('linkType');
-        expect(typeof result.data.linkType).toBe('string');
+
+    // Skip test if no linked activities exist
+    if (!Array.isArray(linkedActivitiesResult.data.items) ||
+        linkedActivitiesResult.data.items.length === 0) {
+        console.log(`No linked activities found for activity ${aid}, skipping link type test`);
+        return;
     }
+
+    // The linked activity response contains fromActivityId, toActivityId, and linkType
+    var linkedActivity = linkedActivitiesResult.data.items[0];
+    var linkedActivityId = linkedActivity.toActivityId;
+    var knownLinkType = linkedActivity.linkType;
+
+    // Skip if we couldn't determine the linked activity ID or link type
+    if (!linkedActivityId || !knownLinkType) {
+        console.log(`Could not determine linked activity ID or link type. Response structure:`, JSON.stringify(linkedActivity, null, 2));
+        return;
+    }
+
+    console.log(`Testing link between activities ${aid} and ${linkedActivityId} with linkType: ${knownLinkType}`);
+
+    // Use the linkType from the linked activity response
+    var result = await myProxy.getActivityLinkType(
+        aid,
+        linkedActivityId,
+        knownLinkType
+    );
+
+    // A 200 status confirms the link type exists between these activities
+    expect(result.status).toBe(200);
+    expect(result.data).toHaveProperty("links");
+    expect(Array.isArray(result.data.links)).toBe(true);
+    console.log(`Successfully verified link type '${knownLinkType}' exists between activities ${aid} and ${linkedActivityId}`);
 });

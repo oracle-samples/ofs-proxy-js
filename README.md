@@ -86,10 +86,15 @@ In order to use this library you need to have access to an Oracle Field Service 
 
 ### Core: Resource Management
 
+`getResource(resourceId, params?)`: Get a single resource by ID
+
+- `params.expand` (array): Include sub-entities like inventories, workZones, workSkills
+- `params.fields` (array): Specify which resource fields to return
+
 `getResources(params?)`: Get existing resources with optional filtering parameters
 
 - `params.canBeTeamHolder` (boolean): Filter resources that can be team holders
-- `params.canParticipateInTeam` (boolean): Filter resources that can participate in teams  
+- `params.canParticipateInTeam` (boolean): Filter resources that can participate in teams
 - `params.expand` (array): Include sub-entities like inventories, workZones, workSkills
 - `params.fields` (array): Specify which resource fields to return
 - `params.limit` (number): Number of items to return (1-100, default 100)
@@ -129,6 +134,7 @@ Please see the `docs/` directory for documentation and a simple example
 | 1.6     | Added `getUsers`, `getUserDetails`, `getAllUsers`                                     |
 | 1.8     | Added `getProperties`, `getPropertyDetails`, `updateProperty` `createReplaceProperty` |
 | 1.23    | Added `getLinkedActivities`, `getActivityLinkType` methods                           |
+| 1.25    | Added `getResource` method for single resource retrieval                             |
 
 ## Contributing
 
