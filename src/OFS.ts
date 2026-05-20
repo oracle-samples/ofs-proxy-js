@@ -23,6 +23,8 @@ import {
   OFSBulkUpdateRequest,
   OFSGetResourcesParams,
   OFSGetResourceParams,
+  OFSUpdateResourceParams,
+  OFSUpdateResourceRequest,
   OFSGetResourceAssistantsParams,
   OFSResourceResponse,
   OFSSingleResourceResponse,
@@ -165,8 +167,16 @@ export class OFS {
     return fetchPromise;
   }
 
-  private _patch(partialURL: string, data: any): Promise<OFSResponse> {
+  private _patch(
+    partialURL: string,
+    data: any,
+    params: any = undefined
+  ): Promise<OFSResponse> {
     var theURL = new URL(partialURL, this._baseURL);
+    if (params != undefined) {
+      const urlSearchParams = new URLSearchParams(params);
+      theURL.search = urlSearchParams.toString();
+    }
     var myHeaders = new Headers();
     myHeaders.append("Authorization", this.authorization);
     myHeaders.append("Content-Type", "application/json");
@@ -178,15 +188,36 @@ export class OFS {
     const fetchPromise = fetch(theURL, requestOptions)
       .then(async function (response) {
         // Your code for handling the data you get from the API
+        var responseData;
+        var contentType = response.headers.get("Content-Type") || undefined;
+        try {
+          if (response.status != 204) {
+            if (contentType?.includes("json")) {
+              responseData = await response.json();
+            } else if (contentType?.includes("text")) {
+              responseData = await response.text();
+            } else {
+              responseData = await response.blob();
+            }
+          }
+        } catch (error) {
+          responseData = undefined;
+        }
         if (response.status < 400) {
-          var data = await response.json();
-          return new OFSResponse(theURL, response.status, undefined, data);
+          return new OFSResponse(
+            theURL,
+            response.status,
+            undefined,
+            responseData,
+            contentType
+          );
         } else {
           return new OFSResponse(
             theURL,
             response.status,
             response.statusText,
-            undefined
+            responseData,
+            contentType
           );
         }
       })
@@ -725,6 +756,32 @@ export class OFS {
       partialURL,
       Object.keys(queryParams).length > 0 ? queryParams : undefined
     );
+  }
+
+  /**
+   * Updates an existing resource.
+   * @param resourceId The resource external ID or internal ID, depending on params.identifyResourceBy
+   * @param data Resource fields to update
+   * @param params Optional query parameters for identifying the resource
+   * @returns The updated resource details
+   */
+  async updateResource(
+    resourceId: string,
+    data: OFSUpdateResourceRequest,
+    params: OFSUpdateResourceParams = {}
+  ): Promise<OFSSingleResourceResponse> {
+    const partialURL = `/rest/ofscCore/v1/resources/${resourceId}`;
+    const queryParams: any = {};
+
+    if (params.identifyResourceBy !== undefined) {
+      queryParams.identifyResourceBy = params.identifyResourceBy;
+    }
+
+    return this._patch(
+      partialURL,
+      data,
+      Object.keys(queryParams).length > 0 ? queryParams : undefined
+    ) as Promise<OFSSingleResourceResponse>;
   }
 
   /**
