@@ -380,6 +380,30 @@ export interface OFSResource {
   timeZone?: string;
 }
 
+export type OFSIdentifyResourceBy = "resourceId" | "resourceInternalId";
+
+export interface OFSUpdateResourceParams {
+  identifyResourceBy?: OFSIdentifyResourceBy;
+}
+
+export interface OFSUpdateResourceRequest {
+  dateFormat?: "dd/mm/yy" | "mm/dd/yy" | "dd.mm.yy" | "yyyy/mm/dd" | null;
+  durationStatisticsInitialPeriod?: number | null;
+  durationStatisticsInitialRatio?: number;
+  email?: string | null;
+  language?: string;
+  name?: string;
+  organization?: string | null;
+  parentResourceId?: string;
+  phone?: string | null;
+  resourceId?: string | null;
+  resourceType?: string;
+  status?: "active" | "inactive";
+  timeFormat?: "12-hour" | "24-hour" | null;
+  timeZone?: string;
+  [key: string]: any;
+}
+
 export interface OFSResourceListResponse {
   totalResults: number;
   limit: number;

@@ -91,6 +91,11 @@ In order to use this library you need to have access to an Oracle Field Service 
 - `params.expand` (array): Include sub-entities like inventories, workZones, workSkills
 - `params.fields` (array): Specify which resource fields to return
 
+`updateResource(resourceId, data, params?)`: Update an existing resource
+
+- `data` (object): Resource fields to update, including supported built-in fields and custom properties
+- `params.identifyResourceBy` (`"resourceId"` or `"resourceInternalId"`): Specify whether `resourceId` is an external resource ID or OFS internal ID
+
 `getResources(params?)`: Get existing resources with optional filtering parameters
 
 - `params.canBeTeamHolder` (boolean): Filter resources that can be team holders
